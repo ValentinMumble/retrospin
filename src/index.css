@@ -24,9 +24,10 @@
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Themes, all dark. Vinyl is the default above; the others override the same variables. */
+/* Themes: a color palette and a font pairing, chosen apart (src/themes.ts). Vinyl colors and Poster type
+   are the defaults above; the others override the same variables. All palettes are dark. */
 
-:root[data-theme='liner'] {
+:root[data-palette='espresso'] {
   --bg: #15110e;
   --bg-raised: #221b16;
   --bg-panel: #1b1612;
@@ -41,12 +42,9 @@
   --glow-2: rgba(241, 232, 216, 0.05);
   --overlay: rgba(21, 17, 14, 0.8);
   --window: rgba(241, 232, 216, 0.06);
-  --font-display: 'DM Serif Display', Georgia, serif;
-  --font-body: 'Source Serif 4', Georgia, serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
 }
 
-:root[data-theme='sunset'] {
+:root[data-palette='sunset'] {
   --bg: #22130c;
   --bg-raised: #321e12;
   --bg-panel: #2a1810;
@@ -61,12 +59,9 @@
   --glow-2: rgba(232, 85, 63, 0.1);
   --overlay: rgba(34, 19, 12, 0.8);
   --window: rgba(251, 232, 207, 0.07);
-  --font-display: 'Shrikhand', 'Cooper Black', serif;
-  --font-body: 'Work Sans', system-ui, sans-serif;
-  --font-mono: 'DM Mono', ui-monospace, Menlo, monospace;
 }
 
-:root[data-theme='neon'] {
+:root[data-palette='neon'] {
   --bg: #0b0820;
   --bg-raised: #17123d;
   --bg-panel: #120e31;
@@ -81,12 +76,9 @@
   --glow-2: rgba(255, 60, 172, 0.12);
   --overlay: rgba(11, 8, 32, 0.8);
   --window: rgba(45, 226, 230, 0.08);
-  --font-display: 'Audiowide', 'Arial Black', sans-serif;
-  --font-body: 'Space Grotesk', system-ui, sans-serif;
-  --font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
 }
 
-:root[data-theme='zine'] {
+:root[data-palette='zine'] {
   --bg: #0b0b0b;
   --bg-raised: #181818;
   --bg-panel: #121212;
@@ -101,9 +93,76 @@
   --glow-2: rgba(245, 230, 99, 0.06);
   --overlay: rgba(11, 11, 11, 0.82);
   --window: rgba(244, 244, 244, 0.07);
+}
+
+:root[data-palette='forest'] {
+  --bg: #0c1410;
+  --bg-raised: #16221c;
+  --bg-panel: #111b16;
+  --ink: #e8f1ea;
+  --muted: #9cb3a3;
+  --faint: #5f7466;
+  --line: #233429;
+  --heart: #ff6f61;
+  --accent: #7ee0a1;
+  --on-scene: #0c1410;
+  --glow-1: rgba(126, 224, 161, 0.1);
+  --glow-2: rgba(255, 111, 97, 0.07);
+  --overlay: rgba(12, 20, 16, 0.8);
+  --window: rgba(232, 241, 234, 0.06);
+}
+
+:root[data-palette='midnight'] {
+  --bg: #0a0f1c;
+  --bg-raised: #141c30;
+  --bg-panel: #0f1627;
+  --ink: #eef2fb;
+  --muted: #9aa7c4;
+  --faint: #5c6884;
+  --line: #1f2a43;
+  --heart: #ff5c8a;
+  --accent: #5b9dff;
+  --on-scene: #0a0f1c;
+  --glow-1: rgba(91, 157, 255, 0.13);
+  --glow-2: rgba(255, 92, 138, 0.08);
+  --overlay: rgba(10, 15, 28, 0.8);
+  --window: rgba(91, 157, 255, 0.08);
+}
+
+:root[data-font='serif'] {
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'Source Serif 4', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+}
+
+:root[data-font='groovy'] {
+  --font-display: 'Shrikhand', 'Cooper Black', serif;
+  --font-body: 'Work Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, Menlo, monospace;
+}
+
+:root[data-font='retro'] {
+  --font-display: 'Audiowide', 'Arial Black', sans-serif;
+  --font-body: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
+}
+
+:root[data-font='typewriter'] {
   --font-display: 'Rubik Mono One', 'Arial Black', sans-serif;
   --font-body: 'Courier Prime', 'Courier New', monospace;
   --font-mono: 'Courier Prime', 'Courier New', monospace;
+}
+
+:root[data-font='editorial'] {
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Karla', system-ui, sans-serif;
+  --font-mono: 'Fira Code', ui-monospace, Menlo, monospace;
+}
+
+:root[data-font='signage'] {
+  --font-display: 'Bungee', 'Arial Black', sans-serif;
+  --font-body: 'Rubik', system-ui, sans-serif;
+  --font-mono: 'Roboto Mono', ui-monospace, Menlo, monospace;
 }
 
 * {
@@ -948,18 +1007,46 @@ kbd {
   color: var(--muted);
 }
 
-.country-tag {
+.country-tag,
+.scene-tag {
   padding: 2px 9px;
-  border: 1px solid var(--line);
   border-radius: 999px;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.country-tag {
+  border: 1px solid var(--line);
   color: var(--ink);
 }
 
+.country-tag:hover {
+  border-color: var(--ink);
+}
+
+.country-tag[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-scene);
+}
+
 .scene-tag {
-  padding: 2px 9px;
   border: 1px solid color-mix(in srgb, var(--scene) 55%, transparent);
-  border-radius: 999px;
   color: color-mix(in srgb, var(--scene) var(--scene-text), var(--ink));
+}
+
+.scene-tag:hover {
+  border-color: var(--scene);
+}
+
+.scene-tag[aria-pressed='true'] {
+  border-color: var(--scene);
+  background: var(--scene);
+  color: var(--on-scene);
 }
 
 .panel h2 {
@@ -1343,6 +1430,20 @@ kbd {
   display: block;
   font-size: 15px;
   line-height: 1.2;
+}
+
+.theme-section {
+  margin: 8px 10px 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.theme-menu {
+  max-height: min(70vh, 640px);
+  overflow-y: auto;
 }
 
 .theme-description {

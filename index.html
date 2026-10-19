@@ -17,13 +17,21 @@
     />
     <title>Retrospin</title>
     <script>
-      // Apply the saved theme before the first paint, so a reload never flashes the default one.
-      // src/themes.ts saves it and loads the theme's fonts.
+      // Apply the saved colors and fonts before the first paint, so a reload never flashes the defaults.
+      // src/themes.ts keeps the options, saves the choice and loads the fonts.
       try {
-        const theme = localStorage.getItem('retrospin.theme')
-        if (theme && theme !== 'vinyl') document.documentElement.dataset.theme = theme
+        const old = {
+          liner: ['espresso', 'serif'],
+          sunset: ['sunset', 'groovy'],
+          neon: ['neon', 'retro'],
+          zine: ['zine', 'typewriter'],
+        }[localStorage.getItem('retrospin.theme')]
+        const palette = localStorage.getItem('retrospin.palette') ?? old?.[0]
+        const font = localStorage.getItem('retrospin.font') ?? old?.[1]
+        if (palette && palette !== 'vinyl') document.documentElement.dataset.palette = palette
+        if (font && font !== 'poster') document.documentElement.dataset.font = font
       } catch {
-        // Storage blocked: the default theme it is.
+        // Storage blocked: the defaults it is.
       }
     </script>
   </head>

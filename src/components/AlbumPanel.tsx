@@ -10,6 +10,11 @@ interface AlbumPanelProps {
   likes: AlbumLikes | undefined
   hasPrevious: boolean
   hasNext: boolean
+  /** True when the timeline shows only this album's scene (or country). */
+  sceneActive: boolean
+  countryActive: boolean
+  onFilterScene: () => void
+  onFilterCountry: () => void
   onPrevious: () => void
   onNext: () => void
   onClose: () => void
@@ -28,7 +33,19 @@ function plural(count: number, word: string) {
   return `${count} ${word}${count === 1 ? '' : 's'}`
 }
 
-export function AlbumPanel({ album, likes, hasPrevious, hasNext, onPrevious, onNext, onClose }: AlbumPanelProps) {
+export function AlbumPanel({
+  album,
+  likes,
+  hasPrevious,
+  hasNext,
+  sceneActive,
+  countryActive,
+  onFilterScene,
+  onFilterCountry,
+  onPrevious,
+  onNext,
+  onClose,
+}: AlbumPanelProps) {
   const closeRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLElement>(null)
   const scene = SCENES[album.scene]
@@ -93,11 +110,25 @@ export function AlbumPanel({ album, likes, hasPrevious, hasNext, onPrevious, onN
         <div className="panel-meta">
           <span>{formatDate(album.date)}</span>
           {album.country && (
-            <span className="country-tag">
+            <button
+              type="button"
+              className="country-tag"
+              aria-pressed={countryActive}
+              title={countryActive ? 'Show every country' : `Show only ${countryName(album.country)}`}
+              onClick={onFilterCountry}
+            >
               {flag(album.country)} {countryName(album.country)}
-            </span>
+            </button>
           )}
-          <span className="scene-tag">{scene.label}</span>
+          <button
+            type="button"
+            className="scene-tag"
+            aria-pressed={sceneActive}
+            title={sceneActive ? 'Show every scene' : `Show only ${scene.label}`}
+            onClick={onFilterScene}
+          >
+            {scene.label}
+          </button>
         </div>
         <h2 id="panel-title">{album.title}</h2>
         <p className="panel-artist">{album.artist}</p>

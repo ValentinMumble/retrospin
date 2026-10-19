@@ -182,6 +182,13 @@ export default function App() {
   )
 
   const toggleScene = (scene: SceneKey) => setActiveScenes((current) => toggled(current, scene))
+  /** From the album panel: show only that scene (or every scene again if it was the only one). */
+  const only = <T,>(current: ReadonlySet<T>, value: T): ReadonlySet<T> =>
+    current.size === 1 && current.has(value) ? new Set() : new Set([value])
+  const keepSelectedInView = () => {
+    const id = selectedId
+    if (id) requestAnimationFrame(() => requestAnimationFrame(() => timelineRef.current?.scrollToAlbum(id)))
+  }
   const toggleCountry = (code: string) => setActiveCountries((current) => toggled(current, code))
 
   const addAlbum = useCallback((album: Album) => {
@@ -501,6 +508,20 @@ export default function App() {
           likes={likes?.get(selected.id)}
           hasPrevious={selectedIndex > 0}
           hasNext={selectedIndex >= 0 && selectedIndex < albums.length - 1}
+          sceneActive={activeScenes.size === 1 && activeScenes.has(selected.scene)}
+          countryActive={
+            selected.country !== null && activeCountries.size === 1 && activeCountries.has(selected.country)
+          }
+          onFilterScene={() => {
+            setActiveScenes((current) => only(current, selected.scene))
+            keepSelectedInView()
+          }}
+          onFilterCountry={() => {
+            const country = selected.country
+            if (!country) return
+            setActiveCountries((current) => only(current, country))
+            keepSelectedInView()
+          }}
           onPrevious={() => step(-1)}
           onNext={() => step(1)}
           onClose={() => setSelectedId(null)}
