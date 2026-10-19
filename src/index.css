@@ -147,8 +147,8 @@ kbd {
 
 .app {
   height: 100dvh;
-  display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
 }
 
 /* Top bar */
@@ -225,10 +225,24 @@ kbd {
   font-weight: 600;
 }
 
-.tools {
+.finder,
+.actions {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.finder .filters-button {
+  display: none;
+}
+
+.filters-button[aria-expanded='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.hint-touch {
+  display: none;
 }
 
 .search {
@@ -361,6 +375,7 @@ kbd {
 /* Timeline */
 
 .timeline {
+  flex: 1;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
   min-height: 0;
@@ -430,7 +445,10 @@ kbd {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: calc(var(--eras-h) + 6px) 48px 0 28px;
+  max-height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: calc(var(--eras-h) + 6px) 48px 16px 28px;
 }
 
 .outro {
@@ -1044,9 +1062,51 @@ kbd {
     font-size: 19px;
   }
 
-  .tools {
-    flex: 1 1 100%;
+  .brand {
+    flex: 1;
+  }
+
+  .actions {
+    order: 1;
+    gap: 6px;
+  }
+
+  .actions .toggle,
+  .connect,
+  .account {
+    padding: 7px 11px;
+  }
+
+  .wide-label {
+    display: none;
+  }
+
+  .finder {
     order: 2;
+    flex: 1 1 100%;
+  }
+
+  .finder .filters-button {
+    display: inline-flex;
+  }
+
+  .scenes {
+    display: none;
+  }
+
+  .app.filters-open .scenes {
+    display: flex;
+  }
+
+  .intro h1,
+  .outro h2 {
+    margin: 6px 0 12px;
+    font-size: clamp(34px, 10vw, 46px);
+  }
+
+  .intro p,
+  .outro p {
+    font-size: 14px;
   }
 
   .search {
@@ -1061,7 +1121,8 @@ kbd {
     margin: 0;
   }
 
-  .scenes {
+  .scenes,
+  .app.filters-open .scenes {
     padding: 0 16px 8px;
   }
 
@@ -1098,6 +1159,7 @@ kbd {
 
   .panel-cover {
     width: 62%;
+    margin: 0 auto;
   }
 
   @keyframes slide-up {
@@ -1105,6 +1167,42 @@ kbd {
       opacity: 0;
       transform: translateY(40px);
     }
+  }
+}
+
+/* Touch screens: bigger targets, swipe hint instead of keys */
+
+@media (pointer: coarse) {
+  .chip {
+    padding: 6px 12px;
+  }
+
+  .hint-keys {
+    display: none;
+  }
+
+  .hint-touch {
+    display: inline;
+  }
+}
+
+@media (max-width: 760px) {
+  .minimap {
+    height: 48px;
+    margin-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .minimap-bars {
+    height: 32px;
+  }
+
+  .minimap-window {
+    height: 38px;
+  }
+
+  .minimap-labels span {
+    top: 36px;
+    font-size: 10px;
   }
 }
 

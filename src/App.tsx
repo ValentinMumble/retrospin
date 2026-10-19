@@ -68,6 +68,8 @@ export default function App() {
   const [syncing, setSyncing] = useState(false)
   const [spotifyError, setSpotifyError] = useState<string | null>(null)
   const [dialog, setDialog] = useState<'suggest' | 'review' | null>(null)
+  /** On phones the scene and country filters fold away behind a Filters button. */
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   const loadAlbums = useCallback(async () => {
     try {
@@ -91,17 +93,21 @@ export default function App() {
         await loginFinished
         if (!isLoggedIn()) return
         setSyncing(true)
+        // Only the site owner may read the review queue: a refusal just means a regular visitor.
+        // Checked at once, so the owner's Add button shows without waiting for the liked songs.
+        const checkOwner = async () => {
+          const suggestions = await fetchSuggestions().catch(() => null)
+          if (!cancelled && suggestions) {
+            setOwner(true)
+            setPendingCount(suggestions.length)
+          }
+        }
+        void checkOwner()
         const [profile, tracks] = await Promise.all([fetchProfile(), fetchLikedTracks()])
         if (cancelled) return
         setAccount(profile.name)
         setLikedTracks(tracks)
         setSpotifyError(null)
-        // Only the site owner may read the review queue: a refusal just means a regular visitor.
-        const suggestions = await fetchSuggestions().catch(() => null)
-        if (!cancelled && suggestions) {
-          setOwner(true)
-          setPendingCount(suggestions.length)
-        }
       } catch (error) {
         if (cancelled) return
         setSpotifyError(error instanceof Error ? error.message : String(error))
@@ -245,6 +251,7 @@ export default function App() {
   }, [selectedId, step])
 
   const filtered = query.trim() !== '' || activeScenes.size > 0 || mineOnly || activeCountries.size > 0
+  const activeFilterCount = activeScenes.size + activeCountries.size + (mineOnly ? 1 : 0)
   const clearFilters = () => {
     setQuery('')
     setActiveScenes(new Set())
@@ -254,7 +261,7 @@ export default function App() {
   const currentDecade = centerYear - (centerYear % 10)
 
   return (
-    <div className="app">
+    <div className={`app${filtersOpen ? ' filters-open' : ''}`}>
       <header className="topbar">
         <button type="button" className="brand" onClick={() => timelineRef.current?.scrollToEdge('start')}>
           <span className="brand-disc" aria-hidden="true" />
@@ -273,7 +280,7 @@ export default function App() {
             </button>
           ))}
         </nav>
-        <div className="tools">
+        <div className="finder">
           <input
             className="search"
             type="search"
@@ -282,8 +289,25 @@ export default function App() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
-          <button type="button" className="toggle" onClick={() => setDialog('suggest')}>
-            <span aria-hidden="true">+</span> Suggest
+          <button
+            type="button"
+            className="toggle filters-button"
+            aria-expanded={filtersOpen}
+            onClick={() => setFiltersOpen((open) => !open)}
+          >
+            Filters{activeFilterCount > 0 && <b className="count-badge">{activeFilterCount}</b>}
+          </button>
+        </div>
+        <div className="actions">
+          <button
+            type="button"
+            className="toggle"
+            onClick={() => setDialog('suggest')}
+            aria-label={owner ? 'Add an album' : 'Suggest an album'}
+            title={owner ? 'Add an album' : 'Suggest an album'}
+          >
+            <span aria-hidden="true">+</span>
+            <span className="wide-label">{owner ? ' Add' : ' Suggest'}</span>
           </button>
           {owner && (
             <button type="button" className="toggle" onClick={() => setDialog('review')}>
@@ -296,19 +320,28 @@ export default function App() {
                 type="button"
                 className="toggle"
                 aria-pressed={mineOnly}
+                aria-label="Only my artists"
                 onClick={() => setMineOnly((current) => !current)}
                 title="Only albums by artists from your Spotify liked songs"
               >
-                <span aria-hidden="true">♥</span> My artists
+                <span aria-hidden="true">♥</span>
+                <span className="wide-label"> My artists</span>
               </button>
               <button type="button" className="account" onClick={disconnect} title="Disconnect Spotify">
-                {syncing ? 'Syncing…' : (account ?? 'Spotify')} <span aria-hidden="true">×</span>
+                <span className="wide-label">{syncing ? 'Syncing…' : (account ?? 'Spotify')} </span>
+                <span aria-hidden="true">×</span>
               </button>
             </>
           ) : (
             loginAvailable && (
               <button type="button" className="connect" onClick={() => void startLogin()} disabled={syncing}>
-                {syncing ? 'Loading your likes…' : 'Connect Spotify'}
+                {syncing ? (
+                  'Loading…'
+                ) : (
+                  <>
+                    <span className="wide-label">Connect </span>Spotify
+                  </>
+                )}
               </button>
             )
           )}
@@ -408,7 +441,10 @@ export default function App() {
               )
             )}
             <p className="hint">
-              Scroll or drag to travel in time. <kbd>←</kbd> <kbd>→</kbd> step, <kbd>/</kbd> search.
+              <span className="hint-keys">
+                Scroll or drag to travel in time. <kbd>←</kbd> <kbd>→</kbd> step, <kbd>/</kbd> search.
+              </span>
+              <span className="hint-touch">Swipe sideways to travel in time.</span>
             </p>
             <button type="button" className="go" onClick={() => timelineRef.current?.scrollToYear(years.first)}>
               Start in {years.first} <span aria-hidden="true">→</span>
@@ -419,9 +455,13 @@ export default function App() {
           <>
             <p className="kicker">Today</p>
             <h2>To be continued.</h2>
-            <p>Missing a record that belongs here? Suggest it, and it joins the timeline once reviewed.</p>
+            <p>
+              {owner
+                ? 'Missing a record that belongs here? Add it, it goes straight onto the timeline.'
+                : 'Missing a record that belongs here? Suggest it, and it joins the timeline once reviewed.'}
+            </p>
             <button type="button" className="go" onClick={() => setDialog('suggest')}>
-              Suggest an album
+              {owner ? 'Add an album' : 'Suggest an album'}
             </button>
           </>
         }

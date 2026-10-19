@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta
       name="description"
       content="Retrospin: seventy years of rock records on one horizontal timeline, from Elvis to today."
@@ -16,6 +16,16 @@
       href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap"
     />
     <title>Retrospin</title>
+    <script>
+      // Apply the saved theme before the first paint, so a reload never flashes the default one.
+      // src/themes.ts saves it and loads the theme's fonts.
+      try {
+        const theme = localStorage.getItem('retrospin.theme')
+        if (theme && theme !== 'vinyl') document.documentElement.dataset.theme = theme
+      } catch {
+        // Storage blocked: the default theme it is.
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

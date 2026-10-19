@@ -26,6 +26,7 @@ export function SuggestDialog({ owner, onClose, onPublished }: SuggestDialogProp
   const [sending, setSending] = useState(false)
   const [done, setDone] = useState<{ status: 'published' | 'pending'; album: Album } | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const title = owner ? 'Add an album' : 'Suggest an album'
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -89,7 +90,7 @@ export function SuggestDialog({ owner, onClose, onPublished }: SuggestDialogProp
   if (done) {
     const { album } = done
     return (
-      <Dialog title="Suggest an album" onClose={onClose}>
+      <Dialog title={title} onClose={onClose}>
         <div className="suggest-done">
           {album.spotify?.coverSmall && <img src={album.spotify.coverSmall} alt="" />}
           <div>
@@ -109,7 +110,7 @@ export function SuggestDialog({ owner, onClose, onPublished }: SuggestDialogProp
         </div>
         <div className="dialog-actions">
           <button type="button" className="go" onClick={startOver}>
-            Suggest another
+            {owner ? 'Add another' : 'Suggest another'}
           </button>
         </div>
       </Dialog>
@@ -118,7 +119,7 @@ export function SuggestDialog({ owner, onClose, onPublished }: SuggestDialogProp
 
   if (picked) {
     return (
-      <Dialog title="Suggest an album" onClose={onClose}>
+      <Dialog title={title} onClose={onClose}>
         <div className="suggest-picked">
           {picked.cover && <img src={picked.cover} alt="" />}
           <div>
@@ -149,7 +150,10 @@ export function SuggestDialog({ owner, onClose, onPublished }: SuggestDialogProp
           />
           <span className="field-hint">{280 - note.length} characters left</span>
         </label>
-        <p className="field-hint">The scene, the country, the cover and the songs are fetched for you.</p>
+        <p className="field-hint">
+          {owner ? 'It goes straight onto the timeline. ' : ''}The scene, the country, the cover and the songs are
+          fetched for you.
+        </p>
         {error && <p className="dialog-error">{error}</p>}
         <div className="dialog-actions">
           <button type="button" className="text-button" onClick={() => setPicked(null)}>
@@ -164,7 +168,7 @@ export function SuggestDialog({ owner, onClose, onPublished }: SuggestDialogProp
   }
 
   return (
-    <Dialog title="Suggest an album" onClose={onClose}>
+    <Dialog title={title} onClose={onClose}>
       <input
         ref={inputRef}
         className="search dialog-search"
