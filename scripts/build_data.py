@@ -29,7 +29,8 @@ HERE = Path(__file__).resolve().parent
 CATALOG = HERE / "catalog.txt"
 CACHE = HERE / ".cache" / "spotify.json"
 MB_CACHE = HERE / ".cache" / "musicbrainz.json"
-OUTPUT = HERE.parent / "src" / "data" / "albums.json"
+# The seed for Redis: scripts/seed_redis.py loads it into the album store.
+OUTPUT = HERE / ".cache" / "albums.json"
 MB_AGENT = "retrospin/0.1 (https://vumble.dev)"
 SCENES = {"rnr", "pop", "roots", "psych", "art", "prog", "hard", "soft", "punk", "postpunk", "newwave", "alt",
           "dream", "britpop", "indie"}
@@ -37,7 +38,7 @@ EXTRA_WORDS = re.compile(r"remaster|deluxe|edition|anniversary|expanded|version|
                          r"collector|super|reissue|definitive|feat\.|with ", re.IGNORECASE)
 SUFFIX = re.compile(r"\s+-\s+.*\b(remaster\w*|edition|version|anniversary|mono|stereo|live|mix|edit)\b.*$",
                     re.IGNORECASE)
-BAD_WORDS = re.compile(r"karaoke|tribute|cover|in the style of|made famous", re.IGNORECASE)
+BAD_WORDS = re.compile(r"karaoke|tribute|cover|in the style of|made famous|\bdemos?\b", re.IGNORECASE)
 
 
 def credentials():

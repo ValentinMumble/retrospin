@@ -88,6 +88,7 @@
 1972 | Deep Purple | Machine Head | hard | Smoke on the Water tells the story of the Montreux casino fire.
 1972 | Lou Reed | Transformer | art | Produced by Bowie and Mick Ronson, with Walk on the Wild Side.
 1972 | Roxy Music | Roxy Music | art | Bryan Ferry's croon and Brian Eno's synthesizer noises.
+1972 | NEU! | NEU! | prog | Two ex-Kraftwerk members and Klaus Dinger's motorik beat: krautrock's steady heartbeat.
 1973 | Pink Floyd | The Dark Side of the Moon | prog | Stayed on the Billboard 200 for more than 900 weeks.
 1973 | Iggy and the Stooges | Raw Power | punk | Search and Destroy. Bowie did the mix.
 1973 | Genesis | Selling England by the Pound | prog | Peter Gabriel era prog at its most English.
@@ -102,6 +103,7 @@
 1975 | Queen | A Night at the Opera | art | Bohemian Rhapsody.
 1975 | Fleetwood Mac | Fleetwood Mac | soft | The first album with Lindsey Buckingham and Stevie Nicks.
 1975 | Led Zeppelin | Physical Graffiti | hard | Kashmir, on a double album.
+1975 | NEU! | NEU! '75 | prog | Calm on side one, loud on side two, where Hero sounds like punk two years early.
 1976 | Ramones | Ramones | punk | Fourteen songs in under thirty minutes.
 1976 | The Modern Lovers | The Modern Lovers | punk | Recorded in 1972 with John Cale, released four years later. Roadrunner!
 1976 | Eagles | Hotel California | soft | You can check out any time you like.
@@ -342,3 +344,123 @@
 2025 | Hotel Lux | The Bitter Cup | postpunk | London post-punk with a pub-rock grin.
 2026 | The Strokes | Reality Awaits | indie | Their first album in six years.
 2026 | Part Time | Cyber Tongue | indie | The newest record on this timeline.
+
+# Added from Last.fm: the most-listened albums of each scene's tags (scripts/suggest_albums.py), picked by hand.
+
+1960 | The Everly Brothers | A Date With the Everly Brothers | rnr | Includes the first recording of Love Hurts.
+1961 | Del Shannon | Runaway With Del Shannon | rnr | Runaway and its buzzing Musitron organ solo.
+1980 | The Cramps | Songs the Lord Taught Us | rnr | Psychobilly from New York: rockabilly through a horror-movie filter.
+1981 | Stray Cats | Stray Cats | rnr | The rockabilly revival, with Rock This Town and Stray Cat Strut.
+1989 | Roy Orbison | Mystery Girl | rnr | You Got It. Released eight weeks after his death.
+
+1963 | The Beatles | With the Beatles | pop | Released in the UK on 22 November 1963, the day Kennedy was shot.
+1965 | The Beatles | Help! | pop | The title song, and Yesterday, with no other Beatle playing on it.
+1967 | The Kinks | Something Else by the Kinks | pop | Waterloo Sunset.
+1968 | Margo Guryan | Take a Picture | pop | Her only album: sunshine pop that found its fans decades later.
+
+1964 | Simon & Garfunkel | Wednesday Morning, 3 A.M. | roots | The first, acoustic version of The Sound of Silence.
+1964 | Bob Dylan | Another Side of Bob Dylan | roots | Recorded in a single night.
+1969 | Joni Mitchell | Clouds | roots | Both Sides Now, in her own voice.
+1972 | Jim Croce | You Don't Mess Around with Jim | roots | Time in a Bottle and the title song.
+1974 | America | Holiday | soft | Produced by George Martin, with Tin Man.
+1976 | Bob Dylan | Desire | roots | Hurricane and One More Cup of Coffee.
+2002 | Neko Case | Blacklisted | roots | Country noir and a huge voice.
+2003 | Songs: Ohia | Magnolia Electric Co. | roots | Jason Molina's band at full volume.
+2022 | Big Thief | Dragon New Warm Mountain I Believe in You | roots | A sprawling double album recorded in four different places.
+2024 | Adrianne Lenker | Bright Future | roots | Big Thief's singer, recorded to analog tape with friends.
+
+1967 | Captain Beefheart & His Magic Band | Safe as Milk | psych | Blues gone strange, with a young Ry Cooder on guitar.
+1967 | Bee Gees | Bee Gees' 1st | psych | Before disco: baroque psych pop with To Love Somebody.
+1968 | Pink Floyd | A Saucerful of Secrets | psych | The only album with both Syd Barrett and David Gilmour.
+1968 | Cream | Wheels of Fire | psych | Half studio, half live, with White Room and Crossroads.
+1970 | The Doors | Morrison Hotel | psych | Roadhouse Blues.
+2007 | Deerhunter | Cryptograms | psych | Ambient drift on one side, garage pop on the other.
+2016 | King Gizzard & The Lizard Wizard | Nonagon Infinity | psych | An album that loops: the last song runs straight into the first. Not on Spotify: the band left it in 2025.
+
+1973 | David Bowie | Aladdin Sane | art | The lightning bolt cover.
+1974 | Brian Eno | Here Come the Warm Jets | art | His first solo album after leaving Roxy Music.
+1975 | Brian Eno | Another Green World | art | Eno moves from songs toward ambient music.
+1976 | Manfred Mann's Earth Band | The Roaring Silence | art | Blinded by the Light, a Springsteen song that became a US number one.
+1980 | David Bowie | Scary Monsters (And Super Creeps) | art | Ashes to Ashes goes back to Major Tom.
+1991 | Talk Talk | Laughing Stock | art | Their last album, quiet and almost improvised.
+
+1972 | Yes | Close to the Edge | prog | The title suite fills all of side one.
+1973 | Faust | Faust IV | prog | Krautrock recorded in England for Virgin Records.
+1974 | Camel | Mirage | prog | Instrumental English prog, with Lady Fantasy.
+1981 | Rush | Moving Pictures | prog | Tom Sawyer and YYZ.
+1983 | Pink Floyd | The Final Cut | prog | Roger Waters' last album with the band.
+1987 | Pink Floyd | A Momentary Lapse of Reason | prog | The first album without Roger Waters.
+2002 | Porcupine Tree | In Absentia | prog | Steven Wilson's prog gets heavy.
+
+1970 | Mountain | Climbing! | hard | Mississippi Queen.
+1975 | Nazareth | Hair of the Dog | hard | Scottish hard rock. The US edition adds their cover of Love Hurts.
+1976 | The Runaways | The Runaways | hard | Cherry Bomb, from Joan Jett's first band.
+1983 | ZZ Top | Eliminator | hard | Beards, a red hot rod and synth-driven boogie.
+1983 | Iron Maiden | Piece of Mind | hard | The Trooper.
+1984 | Van Halen | 1984 | hard | Jump, led by a synthesizer.
+1984 | Scorpions | Love at First Sting | hard | Rock You Like a Hurricane and Still Loving You.
+1989 | Alice Cooper | Trash | hard | Poison, a late hit for shock rock's founder.
+1990 | Judas Priest | Painkiller | hard | Speed metal from the band that invented the leather look.
+1993 | Aerosmith | Get a Grip | hard | Crazy, Cryin' and Amazing: their MTV comeback.
+2021 | Måneskin | Teatro d'ira: Vol. I | hard | Italian glam rock that won Eurovision 2021 with Zitti e buoni.
+
+1979 | George Harrison | George Harrison | soft | Blow Away.
+1980 | Steely Dan | Gaucho | soft | Their last album for twenty years.
+1982 | Fleetwood Mac | Mirage | soft | Hold Me and Gypsy.
+1984 | REO Speedwagon | Wheels Are Turnin' | soft | Can't Fight This Feeling.
+1985 | The Outfield | Play Deep | newwave | Your Love.
+1987 | Sting | ...Nothing Like the Sun | soft | Englishman in New York and Fragile.
+1989 | Phil Collins | ...But Seriously | soft | Another Day in Paradise.
+2013 | HAIM | Days Are Gone | soft | Three sisters playing 80s soft rock and R&B.
+2017 | Mac DeMarco | This Old Dog | soft | Gentle songs about his father, on acoustic guitar and old synths.
+2021 | Parcels | Day/Night | soft | An Australian band in Berlin with Fleetwood Mac grooves.
+
+1978 | Buzzcocks | Love Bites | punk | Ever Fallen in Love (With Someone You Shouldn't've).
+1980 | Dead Kennedys | Fresh Fruit for Rotting Vegetables | punk | California Über Alles.
+1989 | Bad Religion | No Control | punk | Fast, smart Los Angeles hardcore.
+1989 | Ramones | Brain Drain | punk | Pet Sematary, written for the Stephen King film.
+2001 | Sum 41 | All Killer No Filler | punk | Fat Lip and pop punk at its peak.
+2006 | Rise Against | The Sufferer & the Witness | punk | Chicago melodic hardcore with Prayer of the Refugee.
+
+1979 | The Cure | Three Imaginary Boys | postpunk | Their debut, jittery and minimal.
+1982 | The Cure | Pornography | postpunk | The bleakest record of their dark trilogy.
+1982 | Cocteau Twins | Garlands | postpunk | Their debut, closer to goth than to dream pop.
+1983 | Bauhaus | Burning from the Inside | postpunk | Their last album before the split.
+1985 | Killing Joke | Night Time | postpunk | Eighties, the riff Nirvana was accused of borrowing for Come as You Are.
+1988 | Caifanes | Caifanes | postpunk | Mexico City's answer to the Cure.
+2004 | Death from Above 1979 | You're a Woman, I'm a Machine | postpunk | Just bass and drums, very loud.
+
+1985 | Talking Heads | Little Creatures | newwave | Road to Nowhere.
+1986 | Depeche Mode | Black Celebration | newwave | Darker and moodier: the start of their peak years.
+2001 | New Order | Get Ready | newwave | Their first album in eight years, with Crystal.
+
+1992 | Blind Melon | Blind Melon | alt | No Rain and its bee girl video.
+1995 | Foo Fighters | Foo Fighters | alt | Dave Grohl played almost every instrument himself.
+1996 | Cake | Fashion Nugget | alt | The Distance and a deadpan I Will Survive.
+2001 | Incubus | Morning View | alt | Recorded in a house on the Malibu coast.
+2003 | Placebo | Sleeping with Ghosts | alt | This Picture and Special Needs.
+2006 | Red Hot Chili Peppers | Stadium Arcadium | alt | A double album, with Snow (Hey Oh).
+
+1992 | Drop Nineteens | Delaware | dream | Boston shoegaze, a cult record rediscovered online.
+1996 | Cocteau Twins | Milk & Kisses | dream | Their last album.
+2010 | Wild Nothing | Gemini | dream | Bedroom dream pop recorded by Jack Tatum alone.
+2012 | DIIV | Oshin | dream | Brooklyn shoegaze with a krautrock pulse.
+2013 | My Bloody Valentine | m b v | dream | Put online with no warning, 22 years after Loveless.
+2015 | Beach House | Thank Your Lucky Stars | dream | Released seven weeks after Depression Cherry.
+2019 | Clairo | Immunity | dream | Bedroom pop, produced by Rostam Batmanglij.
+2023 | Slowdive | everything is alive | dream | Their second album since getting back together.
+
+1995 | Supergrass | I Should Coco | britpop | Alright, a teenage summer anthem.
+1995 | Blur | The Great Escape | britpop | Country House beat Oasis's Roll With It to number one.
+1999 | Travis | The Man Who | britpop | Why Does It Always Rain on Me?
+2001 | Stereophonics | Just Enough Education to Perform | britpop | Have a Nice Day.
+2008 | Coldplay | Viva la Vida or Death and All His Friends | britpop | Produced by Brian Eno.
+
+1994 | Pavement | Crooked Rain, Crooked Rain | indie | Cut Your Hair and Range Life.
+1999 | American Football | American Football | indie | Midwest emo's cult record, with that house on the cover.
+2000 | The White Stripes | De Stijl | indie | Named after the Dutch art movement.
+2004 | Modest Mouse | Good News for People Who Love Bad News | indie | Float On.
+2005 | Franz Ferdinand | You Could Have It So Much Better | indie | Do You Want To.
+2008 | Cage the Elephant | Cage the Elephant | indie | Ain't No Rest for the Wicked.
+2009 | Metric | Fantasies | indie | Help I'm Alive.
+2017 | King Krule | The OOZ | indie | Jazz, punk and sleepless south London.

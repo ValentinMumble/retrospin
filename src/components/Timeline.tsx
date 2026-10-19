@@ -10,7 +10,6 @@ import {
   type ReactNode,
   type Ref,
 } from 'react'
-import { firstYear, lastYear } from '../data'
 import { ERAS } from '../eras'
 import { buildLayout, measure, spanOf, yearAt, type Layout } from '../layout'
 import type { LikesByAlbum } from '../likes'
@@ -30,6 +29,8 @@ export interface TimelineHandle {
 
 interface TimelineProps {
   albums: Album[]
+  firstYear: number
+  lastYear: number
   likes: LikesByAlbum | null
   selectedId: string | null
   onSelect: (id: string) => void
@@ -119,6 +120,8 @@ const YearBlocks = memo(function YearBlocks({ layout, likes, selectedId, onSelec
 
 export function Timeline({
   albums,
+  firstYear,
+  lastYear,
   likes,
   selectedId,
   onSelect,
@@ -132,7 +135,10 @@ export function Timeline({
   const [viewport, setViewport] = useState({ width: window.innerWidth, height: window.innerHeight - 180 })
   const [scrollLeft, setScrollLeft] = useState(0)
   const metrics = useMemo(() => measure(viewport.width, viewport.height), [viewport])
-  const layout = useMemo(() => buildLayout(albums, metrics, firstYear, lastYear), [albums, metrics])
+  const layout = useMemo(
+    () => buildLayout(albums, metrics, firstYear, lastYear),
+    [albums, metrics, firstYear, lastYear],
+  )
 
   // Values read by the stable scroll handler.
   const layoutRef = useRef(layout)
@@ -201,7 +207,11 @@ export function Timeline({
       const distance = event.clientX - drag.startX
       if (!drag.moved && Math.abs(distance) > 5) {
         drag.moved = true
-        scroller.setPointerCapture(event.pointerId)
+        try {
+          scroller.setPointerCapture(event.pointerId)
+        } catch {
+          // The pointer is already gone (released between events): dragging still works without capture.
+        }
         scroller.classList.add('is-dragging')
       }
       if (drag.moved) scroller.scrollLeft = drag.startLeft - distance

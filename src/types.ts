@@ -38,8 +38,3 @@ export interface Album {
     tracks: string[]
   } | null
 }
-
-export interface Catalog {
-  generatedAt: string
-  albums: Album[]
-}

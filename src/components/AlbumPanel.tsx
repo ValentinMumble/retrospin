@@ -41,6 +41,23 @@ export function AlbumPanel({ album, likes, hasPrevious, hasNext, onPrevious, onN
     panelRef.current?.scrollTo({ top: 0 })
   }, [album.id])
 
+  // A click outside the panel closes it, except on an album, which opens that album instead.
+  // Listening in the bubble phase means a drag on the timeline (whose click is swallowed) never closes it.
+  const onCloseRef = useRef(onClose)
+  useEffect(() => {
+    onCloseRef.current = onClose
+  })
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      const target = event.target
+      if (!(target instanceof Element)) return
+      if (panelRef.current?.contains(target) || target.closest('.card')) return
+      onCloseRef.current()
+    }
+    document.addEventListener('click', onClick)
+    return () => document.removeEventListener('click', onClick)
+  }, [])
+
   return (
     <>
       <div className="panel-backdrop" onClick={onClose} />
@@ -76,7 +93,7 @@ export function AlbumPanel({ album, likes, hasPrevious, hasNext, onPrevious, onN
         <div className="panel-meta">
           <span>{formatDate(album.date)}</span>
           {album.country && (
-            <span>
+            <span className="country-tag">
               {flag(album.country)} {countryName(album.country)}
             </span>
           )}

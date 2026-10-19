@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { fetchAlbums, fetchSuggestions } from './api'
 import { AlbumPanel } from './components/AlbumPanel'
+import { ReviewDialog } from './components/ReviewDialog'
+import { SuggestDialog } from './components/SuggestDialog'
+import { ThemePicker } from './components/ThemePicker'
 import { Timeline, type TimelineHandle } from './components/Timeline'
 import { countryName, flag } from './countries'
-import { catalog, firstYear, lastYear } from './data'
-import { matchLikes, type LikesByAlbum } from './likes'
+import { matchLikes } from './likes'
 import { SCENES, SCENE_ORDER } from './scenes'
 import {
   cachedLikedTracks,
@@ -14,20 +17,14 @@ import {
   loginAvailable,
   logout,
   startLogin,
+  type LikedTrack,
 } from './spotify'
 import { cssVars } from './style'
-import type { SceneKey } from './types'
+import type { Album, SceneKey } from './types'
 
 const DECADES = [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020]
-const LATEST = catalog.albums[catalog.albums.length - 1]
-const COUNTRIES = Object.entries(
-  catalog.albums.reduce<Record<string, number>>((counts, album) => {
-    if (album.country) counts[album.country] = (counts[album.country] ?? 0) + 1
-    return counts
-  }, {}),
-)
-  .map(([code, count]) => ({ code, count, name: countryName(code) }))
-  .sort((first, second) => second.count - first.count || first.name.localeCompare(second.name))
+const FIRST_YEAR = 1955
+const CURRENT_YEAR = new Date().getFullYear()
 
 function fold(text: string) {
   return text
@@ -39,28 +36,53 @@ function fold(text: string) {
 // Started once, outside React, so a double-run effect in development cannot use the login code twice.
 const loginFinished = loginAvailable ? completeLogin() : Promise.resolve(false)
 
-function initialLikes() {
-  const cached = isLoggedIn() ? cachedLikedTracks() : null
-  return cached ? matchLikes(catalog.albums, cached) : null
+function toggled<T>(set: ReadonlySet<T>, value: T): ReadonlySet<T> {
+  const next = new Set(set)
+  if (next.has(value)) next.delete(value)
+  else next.add(value)
+  return next
 }
 
-function albumFromHash() {
-  const id = decodeURIComponent(window.location.hash.slice(1))
-  return catalog.albums.some((album) => album.id === id) ? id : null
+function sortAlbums(albums: Album[]) {
+  return [...albums].sort(
+    (first, second) => first.date.localeCompare(second.date) || first.artist.localeCompare(second.artist),
+  )
 }
 
 export default function App() {
   const timelineRef = useRef<TimelineHandle>(null)
+  const [allAlbums, setAllAlbums] = useState<Album[]>([])
+  const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading')
   const [query, setQuery] = useState('')
   const [activeScenes, setActiveScenes] = useState<ReadonlySet<SceneKey>>(new Set())
   const [mineOnly, setMineOnly] = useState(false)
-  const [country, setCountry] = useState('')
-  const [selectedId, setSelectedId] = useState<string | null>(albumFromHash)
-  const [centerYear, setCenterYear] = useState(firstYear)
-  const [likes, setLikes] = useState<LikesByAlbum | null>(initialLikes)
+  const [activeCountries, setActiveCountries] = useState<ReadonlySet<string>>(new Set())
+  const [selectedId, setSelectedId] = useState<string | null>(
+    () => decodeURIComponent(window.location.hash.slice(1)) || null,
+  )
+  const [centerYear, setCenterYear] = useState(FIRST_YEAR)
+  const [likedTracks, setLikedTracks] = useState<LikedTrack[] | null>(() => (isLoggedIn() ? cachedLikedTracks() : null))
   const [account, setAccount] = useState<string | null>(null)
+  const [owner, setOwner] = useState(false)
+  const [pendingCount, setPendingCount] = useState(0)
   const [syncing, setSyncing] = useState(false)
   const [spotifyError, setSpotifyError] = useState<string | null>(null)
+  const [dialog, setDialog] = useState<'suggest' | 'review' | null>(null)
+
+  const loadAlbums = useCallback(async () => {
+    try {
+      setAllAlbums(sortAlbums(await fetchAlbums()))
+      setLoadState('ready')
+    } catch {
+      setLoadState('error')
+    }
+  }, [])
+
+  useEffect(() => {
+    // The state changes once the fetch answers, not synchronously in the effect.
+    // oxlint-disable-next-line react/set-state-in-effect
+    void loadAlbums()
+  }, [loadAlbums])
 
   useEffect(() => {
     let cancelled = false
@@ -72,12 +94,18 @@ export default function App() {
         const [profile, tracks] = await Promise.all([fetchProfile(), fetchLikedTracks()])
         if (cancelled) return
         setAccount(profile.name)
-        setLikes(matchLikes(catalog.albums, tracks))
+        setLikedTracks(tracks)
         setSpotifyError(null)
+        // Only the site owner may read the review queue: a refusal just means a regular visitor.
+        const suggestions = await fetchSuggestions().catch(() => null)
+        if (!cancelled && suggestions) {
+          setOwner(true)
+          setPendingCount(suggestions.length)
+        }
       } catch (error) {
         if (cancelled) return
         setSpotifyError(error instanceof Error ? error.message : String(error))
-        if (!isLoggedIn()) setLikes(null)
+        if (!isLoggedIn()) setLikedTracks(null)
       } finally {
         if (!cancelled) setSyncing(false)
       }
@@ -88,26 +116,54 @@ export default function App() {
     }
   }, [])
 
+  const likes = useMemo(
+    () => (likedTracks && allAlbums.length ? matchLikes(allAlbums, likedTracks) : null),
+    [allAlbums, likedTracks],
+  )
+
   const disconnect = () => {
     logout()
-    setLikes(null)
+    setLikedTracks(null)
     setAccount(null)
+    setOwner(false)
     setMineOnly(false)
   }
 
+  const years = useMemo(() => {
+    const albumYears = allAlbums.map((album) => album.year)
+    return {
+      first: Math.min(FIRST_YEAR, ...albumYears),
+      last: Math.max(CURRENT_YEAR, ...albumYears),
+    }
+  }, [allAlbums])
+
+  const countries = useMemo(
+    () =>
+      Object.entries(
+        allAlbums.reduce<Record<string, number>>((counts, album) => {
+          if (album.country) counts[album.country] = (counts[album.country] ?? 0) + 1
+          return counts
+        }, {}),
+      )
+        .map(([code, count]) => ({ code, count, name: countryName(code) }))
+        .sort((first, second) => second.count - first.count || first.name.localeCompare(second.name)),
+    [allAlbums],
+  )
+
   const albums = useMemo(() => {
     const needle = fold(query.trim())
-    return catalog.albums.filter(
+    return allAlbums.filter(
       (album) =>
         (activeScenes.size === 0 || activeScenes.has(album.scene)) &&
         (!mineOnly || Boolean(likes?.has(album.id))) &&
-        (!country || album.country === country) &&
+        (activeCountries.size === 0 || (album.country !== null && activeCountries.has(album.country))) &&
         (!needle || fold(`${album.artist} ${album.title}`).includes(needle)),
     )
-  }, [query, activeScenes, mineOnly, country, likes])
+  }, [allAlbums, query, activeScenes, mineOnly, activeCountries, likes])
 
-  const selected = catalog.albums.find((album) => album.id === selectedId) ?? null
+  const selected = allAlbums.find((album) => album.id === selectedId) ?? null
   const selectedIndex = albums.findIndex((album) => album.id === selectedId)
+  const latest = allAlbums[allAlbums.length - 1]
 
   const step = useCallback(
     (offset: 1 | -1) => {
@@ -119,29 +175,33 @@ export default function App() {
     [albums, selectedIndex],
   )
 
-  const toggleScene = (scene: SceneKey) =>
-    setActiveScenes((current) => {
-      const next = new Set(current)
-      if (next.has(scene)) next.delete(scene)
-      else next.add(scene)
-      return next
-    })
+  const toggleScene = (scene: SceneKey) => setActiveScenes((current) => toggled(current, scene))
+  const toggleCountry = (code: string) => setActiveCountries((current) => toggled(current, code))
+
+  const addAlbum = useCallback((album: Album) => {
+    setAllAlbums((current) => sortAlbums([...current.filter((item) => item.id !== album.id), album]))
+  }, [])
 
   useEffect(() => {
+    if (loadState !== 'ready') return
     const url = selectedId ? `#${selectedId}` : window.location.pathname + window.location.search
     window.history.replaceState(null, '', url)
-  }, [selectedId])
+  }, [selectedId, loadState])
 
-  // Opened from a shared link: bring that album into view once the timeline is laid out.
+  // Opened from a shared link: once the albums are in, bring that album into view. An unknown id opens nothing.
+  const openedFromLink = useRef(false)
   useEffect(() => {
-    const id = albumFromHash()
-    if (id) requestAnimationFrame(() => timelineRef.current?.scrollToAlbum(id, false))
-  }, [])
+    if (loadState !== 'ready' || openedFromLink.current) return
+    openedFromLink.current = true
+    if (selectedId && allAlbums.some((album) => album.id === selectedId)) {
+      requestAnimationFrame(() => timelineRef.current?.scrollToAlbum(selectedId, false))
+    }
+  }, [loadState, allAlbums, selectedId])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target instanceof HTMLElement ? event.target : null
-      if (target?.closest('input, textarea, select, [contenteditable="true"]')) {
+      if (target?.closest('input, textarea, select, [contenteditable="true"], [role="dialog"]')) {
         if (event.key === 'Escape') target.blur()
         return
       }
@@ -173,7 +233,7 @@ export default function App() {
           timeline.scrollToEdge('end')
           break
         case '/':
-          document.querySelector<HTMLInputElement>('.search')?.focus()
+          document.querySelector<HTMLInputElement>('.topbar .search')?.focus()
           break
         default:
           return
@@ -184,12 +244,12 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [selectedId, step])
 
-  const filtered = query.trim() !== '' || activeScenes.size > 0 || mineOnly || country !== ''
+  const filtered = query.trim() !== '' || activeScenes.size > 0 || mineOnly || activeCountries.size > 0
   const clearFilters = () => {
     setQuery('')
     setActiveScenes(new Set())
     setMineOnly(false)
-    setCountry('')
+    setActiveCountries(new Set())
   }
   const currentDecade = centerYear - (centerYear % 10)
 
@@ -222,19 +282,14 @@ export default function App() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
-          <select
-            className={`select${country ? ' is-active' : ''}`}
-            aria-label="Filter by country"
-            value={country}
-            onChange={(event) => setCountry(event.target.value)}
-          >
-            <option value="">All countries</option>
-            {COUNTRIES.map((option) => (
-              <option key={option.code} value={option.code}>
-                {flag(option.code)} {option.name} ({option.count})
-              </option>
-            ))}
-          </select>
+          <button type="button" className="toggle" onClick={() => setDialog('suggest')}>
+            <span aria-hidden="true">+</span> Suggest
+          </button>
+          {owner && (
+            <button type="button" className="toggle" onClick={() => setDialog('review')}>
+              Review{pendingCount > 0 && <b className="count-badge">{pendingCount}</b>}
+            </button>
+          )}
           {likes ? (
             <>
               <button
@@ -257,6 +312,7 @@ export default function App() {
               </button>
             )
           )}
+          <ThemePicker />
         </div>
       </header>
 
@@ -283,13 +339,38 @@ export default function App() {
         ))}
         {spotifyError && <span className="notice">{spotifyError}</span>}
         <span className="result-count">
-          {albums.length} of {catalog.albums.length} albums
+          {albums.length} of {allAlbums.length} albums
         </span>
+      </div>
+
+      <div className="scenes countries" role="group" aria-label="Filter by country">
+        <button
+          type="button"
+          className="chip chip-all"
+          aria-pressed={activeCountries.size === 0}
+          onClick={() => setActiveCountries(new Set())}
+        >
+          All countries
+        </button>
+        {countries.map((option) => (
+          <button
+            key={option.code}
+            type="button"
+            className="chip chip-country"
+            aria-pressed={activeCountries.has(option.code)}
+            onClick={() => toggleCountry(option.code)}
+          >
+            <span aria-hidden="true">{flag(option.code)}</span> {option.name}
+            <span className="chip-count">{option.count}</span>
+          </button>
+        ))}
       </div>
 
       <Timeline
         ref={timelineRef}
         albums={albums}
+        firstYear={years.first}
+        lastYear={years.last}
         likes={likes}
         selectedId={selectedId}
         onSelect={setSelectedId}
@@ -297,12 +378,19 @@ export default function App() {
         intro={
           <>
             <p className="kicker">
-              {firstYear} to {lastYear}
+              {years.first} to {years.last}
             </p>
             <h1>Seventy years of rock records</h1>
             <p>
-              <strong>{catalog.albums.length} albums</strong>, from Elvis Presley's first LP to {LATEST.artist}'s{' '}
-              <em>{LATEST.title}</em>. Click a record to read about it and play it.
+              {latest ? (
+                <>
+                  <strong>{allAlbums.length} albums</strong>, from Elvis Presley's first LP to {latest.artist}'s{' '}
+                  <em>{latest.title}</em>.
+                </>
+              ) : (
+                'Rock albums from Elvis Presley to today.'
+              )}{' '}
+              Click a record to read about it and play it.
             </p>
             {likes ? (
               <p>
@@ -322,8 +410,8 @@ export default function App() {
             <p className="hint">
               Scroll or drag to travel in time. <kbd>←</kbd> <kbd>→</kbd> step, <kbd>/</kbd> search.
             </p>
-            <button type="button" className="go" onClick={() => timelineRef.current?.scrollToYear(firstYear)}>
-              Start in {firstYear} <span aria-hidden="true">→</span>
+            <button type="button" className="go" onClick={() => timelineRef.current?.scrollToYear(years.first)}>
+              Start in {years.first} <span aria-hidden="true">→</span>
             </button>
           </>
         }
@@ -331,21 +419,39 @@ export default function App() {
           <>
             <p className="kicker">Today</p>
             <h2>To be continued.</h2>
-            <p>Refresh the data from Spotify and the records you like next will show up here.</p>
-            <button type="button" className="go" onClick={() => timelineRef.current?.scrollToEdge('start')}>
-              <span aria-hidden="true">←</span> Back to {firstYear}
+            <p>Missing a record that belongs here? Suggest it, and it joins the timeline once reviewed.</p>
+            <button type="button" className="go" onClick={() => setDialog('suggest')}>
+              Suggest an album
             </button>
           </>
         }
         empty={
-          <>
-            <p>No album matches these filters.</p>
-            {filtered && (
-              <button type="button" className="go" onClick={clearFilters}>
-                Clear filters
+          loadState === 'loading' ? (
+            <p>Loading the albums…</p>
+          ) : loadState === 'error' ? (
+            <>
+              <p>The albums could not be loaded.</p>
+              <button
+                type="button"
+                className="go"
+                onClick={() => {
+                  setLoadState('loading')
+                  void loadAlbums()
+                }}
+              >
+                Try again
               </button>
-            )}
-          </>
+            </>
+          ) : (
+            <>
+              <p>No album matches these filters.</p>
+              {filtered && (
+                <button type="button" className="go" onClick={clearFilters}>
+                  Clear filters
+                </button>
+              )}
+            </>
+          )
         }
       />
 
@@ -359,6 +465,11 @@ export default function App() {
           onNext={() => step(1)}
           onClose={() => setSelectedId(null)}
         />
+      )}
+
+      {dialog === 'suggest' && <SuggestDialog owner={owner} onClose={() => setDialog(null)} onPublished={addAlbum} />}
+      {dialog === 'review' && (
+        <ReviewDialog onClose={() => setDialog(null)} onPublished={addAlbum} onCountChange={setPendingCount} />
       )}
     </div>
   )

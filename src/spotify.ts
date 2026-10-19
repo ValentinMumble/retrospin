@@ -145,6 +145,11 @@ async function accessToken() {
   }
 }
 
+/** The Spotify access token of the logged-in visitor, or null. */
+export async function currentAccessToken() {
+  return isLoggedIn() ? accessToken() : null
+}
+
 async function api<T>(pathOrUrl: string): Promise<T> {
   const url = pathOrUrl.startsWith('https://') ? pathOrUrl : `https://api.spotify.com/v1${pathOrUrl}`
   for (let attempt = 0; attempt < 4; attempt += 1) {
