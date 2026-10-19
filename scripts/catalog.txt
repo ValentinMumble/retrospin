@@ -1,0 +1,344 @@
+# year | artist | title | scene | note
+# Scenes: rnr, pop, roots, psych, art, prog, hard, punk, postpunk, newwave, soft, alt, dream, britpop, indie
+# Optional extra columns: "q:<search text>" changes the Spotify search, "id:<album id>" picks an exact
+# Spotify album, "c:<XX>" sets the country (two-letter code).
+
+1955 | Bill Haley & His Comets | Rock Around the Clock | rnr | The title song was the first rock 'n' roll record to top the Billboard pop chart.
+1956 | Elvis Presley | Elvis Presley | rnr | The first rock 'n' roll album to reach number one on Billboard.
+1957 | Little Richard | Here's Little Richard | rnr | Tutti Frutti and Long Tall Sally, plus the scream every rock singer copied.
+1957 | Buddy Holly & The Crickets | The "Chirping" Crickets | rnr | Two guitars, bass and drums: the template for the rock band.
+1957 | Johnny Cash | With His Hot and Blue Guitar | roots | Sun Records debut with Folsom Prison Blues and I Walk the Line.
+1958 | Jerry Lee Lewis | Jerry Lee Lewis | rnr | Pumping piano from Sun Records in Memphis.
+1958 | Bo Diddley | Bo Diddley | rnr | The shave-and-a-haircut beat that still turns up everywhere.
+1958 | The Everly Brothers | The Everly Brothers | rnr | Close harmonies the Beatles and Simon & Garfunkel learned from.
+1959 | Chuck Berry | Chuck Berry Is on Top | rnr | Johnny B. Goode, Maybellene, Roll Over Beethoven: the rock guitar rulebook. | q:Chuck Berry Is on Top
+1959 | Ritchie Valens | Ritchie Valens | rnr | La Bamba, released weeks after the plane crash that killed him.
+
+1963 | Bob Dylan | The Freewheelin' Bob Dylan | roots | Blowin' in the Wind made him the voice of the folk boom.
+1963 | The Beatles | Please Please Me | pop | Most of it recorded in a single day at Abbey Road.
+1964 | The Beatles | A Hard Day's Night | pop | Their first album made only of their own songs.
+1964 | The Rolling Stones | The Rolling Stones | pop | London kids playing Chicago blues, loud and fast.
+1964 | The Kinks | Kinks | pop | You Really Got Me and its torn-speaker distortion.
+1965 | The Righteous Brothers | Just Once in My Life | pop | Home of Unchained Melody.
+1965 | The Byrds | Mr. Tambourine Man | roots | A Dylan song on a twelve-string Rickenbacker: folk rock is born.
+1965 | The Who | My Generation | pop | "Hope I die before I get old."
+1965 | Bob Dylan | Highway 61 Revisited | roots | Opens with Like a Rolling Stone, six minutes long in the age of the 2-minute single.
+1965 | The Beatles | Rubber Soul | pop | The Beatles start making albums, not collections of singles.
+1966 | Them | Them Again | pop | Van Morrison's Belfast band, here covering Dylan.
+1966 | The Beach Boys | Pet Sounds | pop | Brian Wilson's studio masterpiece, it pushed the Beatles toward Sgt. Pepper.
+1966 | The Beatles | Revolver | psych | Tomorrow Never Knows: tape loops and a voice through a Leslie speaker.
+1966 | Bob Dylan | Blonde on Blonde | roots | One of rock's first double albums.
+1966 | Simon & Garfunkel | Parsley, Sage, Rosemary and Thyme | roots | Scarborough Fair, an old English ballad, rebuilt as a duet.
+1967 | The Velvet Underground & Nico | The Velvet Underground & Nico | art | Brian Eno said few people bought it, but every one of them started a band.
+1967 | Nico | Chelsea Girl | roots | These Days was written by a teenage Jackson Browne.
+1967 | The Doors | The Doors | psych | Light My Fire and the eleven minutes of The End.
+1967 | The Jimi Hendrix Experience | Are You Experienced | psych | The guitar was never the same after this.
+1967 | Pink Floyd | The Piper at the Gates of Dawn | psych | The only full album with Syd Barrett in charge.
+1967 | The Beatles | Sgt. Pepper's Lonely Hearts Club Band | psych | The summer of love, pressed on vinyl.
+1967 | Love | Forever Changes | psych | Arthur Lee's orchestral, uneasy Los Angeles psychedelia.
+1967 | Buffalo Springfield | Buffalo Springfield Again | roots | Neil Young and Stephen Stills in the same band, briefly.
+1967 | Jefferson Airplane | Surrealistic Pillow | psych | Somebody to Love and White Rabbit.
+1967 | Cream | Disraeli Gears | psych | Sunshine of Your Love, Clapton's blues gone psychedelic.
+1967 | Nancy Sinatra | Movin' With Nancy | pop | Some Velvet Morning, a strange psychedelic duet with Lee Hazlewood.
+1967 | Procol Harum | Procol Harum | psych | Organ, Bach and A Whiter Shade of Pale.
+1968 | The Jimi Hendrix Experience | Electric Ladyland | psych | His double album, with All Along the Watchtower.
+1968 | The Beatles | The Beatles | pop | The White Album: thirty songs, four solo careers taking shape. | q:The Beatles White Album
+1968 | The Rolling Stones | Beggars Banquet | roots | Sympathy for the Devil opens their best run.
+1968 | Van Morrison | Astral Weeks | roots | Jazz players, acoustic bass and a stream of consciousness.
+1968 | The Velvet Underground | White Light/White Heat | art | Sister Ray: seventeen minutes of feedback.
+1968 | The Kinks | The Kinks Are the Village Green Preservation Society | pop | A gentle album about English village life, a flop then and a classic now.
+1968 | The Zombies | Odessey and Oracle | psych | Misspelled on the cover, Time of the Season became a hit after the band had split.
+1968 | The Band | Music from Big Pink | roots | Named after the pink house near Woodstock where they played with Dylan.
+1968 | Big Brother & The Holding Company | Cheap Thrills | psych | Janis Joplin tears through Piece of My Heart.
+1969 | Led Zeppelin | Led Zeppelin | hard | Blues turned up very loud: hard rock arrives.
+1969 | Led Zeppelin | Led Zeppelin II | hard | Whole Lotta Love.
+1969 | The Beatles | Abbey Road | pop | Their last recording sessions, and that zebra crossing.
+1969 | The Rolling Stones | Let It Bleed | roots | Gimme Shelter, the sound of the sixties ending.
+1969 | The Who | Tommy | art | The rock opera about a deaf, dumb and blind pinball wizard.
+1969 | King Crimson | In the Court of the Crimson King | prog | Progressive rock starts here, with 21st Century Schizoid Man.
+1969 | The Stooges | The Stooges | punk | Produced by John Cale. I Wanna Be Your Dog is punk eight years early.
+1969 | MC5 | Kick Out the Jams | punk | Recorded live at Detroit's Grande Ballroom.
+1969 | The Velvet Underground | The Velvet Underground | art | Quiet and tender after John Cale left the band.
+1969 | Neil Young & Crazy Horse | Everybody Knows This Is Nowhere | hard | Cinnamon Girl and long, ragged guitar jams.
+1969 | Creedence Clearwater Revival | Green River | roots | Swamp rock from a band that was actually from California.
+1969 | Captain Beefheart & His Magic Band | Trout Mask Replica | art | Produced by Frank Zappa, still one of the strangest records ever made.
+1969 | CAN | Monster Movie | prog | Cologne's krautrock pioneers lock into the groove.
+
+1970 | Black Sabbath | Paranoid | hard | Heavy metal, from Birmingham, released the same year as their debut.
+1970 | The Stooges | Fun House | punk | Iggy Pop at his most feral.
+1970 | The Velvet Underground | Loaded | art | Sweet Jane and Rock & Roll, two songs every band has covered.
+1970 | Simon & Garfunkel | Bridge over Troubled Water | roots | Their last studio album together.
+1970 | George Harrison | All Things Must Pass | roots | A triple album full of songs the Beatles had passed on.
+1970 | Neil Young | After the Gold Rush | roots | Southern Man and the title song's strange, beautiful fable.
+1970 | Crosby, Stills, Nash & Young | Déjà Vu | roots | Woodstock, Teach Your Children, four voices at once.
+1970 | Grateful Dead | American Beauty | roots | The jam band goes acoustic, with Ripple and Box of Rain.
+1970 | Derek and the Dominos | Layla and Other Assorted Love Songs | hard | Eric Clapton and Duane Allman's guitars wrapped around each other.
+1971 | Led Zeppelin | Led Zeppelin IV | hard | No title, no band name on the sleeve, just four symbols.
+1971 | The Who | Who's Next | hard | Baba O'Riley opens on a looping synthesizer.
+1971 | The Rolling Stones | Sticky Fingers | roots | The Andy Warhol sleeve with a real zipper.
+1971 | David Bowie | Hunky Dory | art | Changes and Life on Mars?
+1971 | T. Rex | Electric Warrior | art | Get It On: glam rock in full sequins.
+1971 | CAN | Tago Mago | prog | Long, hypnotic krautrock built from edited jams.
+1971 | Rod Stewart | Every Picture Tells a Story | roots | Maggie May, a B-side that became a number one.
+1971 | Yes | Fragile | prog | Roundabout and the Roger Dean artwork.
+1971 | Joni Mitchell | Blue | roots | The singer-songwriter album the others are measured against.
+1972 | David Bowie | The Rise and Fall of Ziggy Stardust and the Spiders from Mars | art | The rock star from space who makes it big, then falls.
+1972 | Neil Young | Harvest | roots | Heart of Gold, his only number one single in the US.
+1972 | The Rolling Stones | Exile on Main St. | roots | Recorded largely in the basement of a villa in the south of France.
+1972 | Deep Purple | Machine Head | hard | Smoke on the Water tells the story of the Montreux casino fire.
+1972 | Lou Reed | Transformer | art | Produced by Bowie and Mick Ronson, with Walk on the Wild Side.
+1972 | Roxy Music | Roxy Music | art | Bryan Ferry's croon and Brian Eno's synthesizer noises.
+1973 | Pink Floyd | The Dark Side of the Moon | prog | Stayed on the Billboard 200 for more than 900 weeks.
+1973 | Iggy and the Stooges | Raw Power | punk | Search and Destroy. Bowie did the mix.
+1973 | Genesis | Selling England by the Pound | prog | Peter Gabriel era prog at its most English.
+1973 | Mike Oldfield | Tubular Bells | prog | A 19-year-old played most of the instruments. The first release on Virgin Records.
+1973 | Billy Joel | Piano Man | soft | The title song, about his nights playing a Los Angeles piano bar.
+1973 | Lynyrd Skynyrd | (Pronounced 'Lĕh-'nérd 'Skin-'nérd) | hard | Free Bird and its endless guitar coda. | q:Lynyrd Skynyrd Pronounced
+1973 | New York Dolls | New York Dolls | punk | Glam makeup and trashy rock 'n' roll, a blueprint for punk.
+1974 | Supertramp | Crime of the Century | prog | Clean, piano-led prog with School and Bloody Well Right.
+1975 | Bruce Springsteen | Born to Run | roots | The record that made Springsteen a star.
+1975 | Patti Smith | Horses | punk | Poetry and garage rock, with Robert Mapplethorpe's cover photo.
+1975 | Pink Floyd | Wish You Were Here | prog | A tribute to Syd Barrett, who wandered into the studio during the sessions.
+1975 | Queen | A Night at the Opera | art | Bohemian Rhapsody.
+1975 | Fleetwood Mac | Fleetwood Mac | soft | The first album with Lindsey Buckingham and Stevie Nicks.
+1975 | Led Zeppelin | Physical Graffiti | hard | Kashmir, on a double album.
+1976 | Ramones | Ramones | punk | Fourteen songs in under thirty minutes.
+1976 | The Modern Lovers | The Modern Lovers | punk | Recorded in 1972 with John Cale, released four years later. Roadrunner!
+1976 | Eagles | Hotel California | soft | You can check out any time you like.
+1976 | Chicago | Chicago X | soft | If You Leave Me Now became their first number one.
+1976 | CAN | Flow Motion | prog | I Want More became their only UK hit.
+1976 | David Bowie | Station to Station | art | The Thin White Duke, cold and funky.
+1977 | Fleetwood Mac | Rumours | soft | Written while the band's two couples were breaking up.
+1977 | Pink Floyd | Animals | prog | The inflatable pig over Battersea Power Station.
+1977 | Television | Marquee Moon | punk | Two guitars weaving long lines, straight out of CBGB.
+1977 | Sex Pistols | Never Mind the Bollocks, Here's the Sex Pistols | punk | The record that scared Britain.
+1977 | The Clash | The Clash | punk | White Riot and London punk with a political edge.
+1977 | Suicide | Suicide | punk | Two men, a drum machine and a battered organ. Synth punk before anyone had a name for it.
+1977 | Talking Heads | Talking Heads: 77 | newwave | Psycho Killer, nervous and smart.
+1977 | David Bowie | Low | art | The first of the Berlin albums made with Brian Eno.
+1977 | David Bowie | "Heroes" | art | Recorded at Hansa studio, near the Berlin Wall.
+1977 | Iggy Pop | Lust for Life | punk | Made with Bowie, the title song's drum beat is unforgettable.
+1977 | Kansas | Point of Know Return | prog | Dust in the Wind, the soft song from a prog band.
+1977 | Steely Dan | Aja | soft | Jazz session players and an obsession with perfect sound.
+1977 | Wire | Pink Flag | punk | Twenty-one songs in thirty-five minutes.
+1977 | Elvis Costello | My Aim Is True | newwave | Alison and Watching the Detectives.
+1978 | Kate Bush | The Kick Inside | art | Wuthering Heights made her the first woman to top the UK chart with a song she wrote herself.
+1978 | Jeff Wayne | Jeff Wayne's Musical Version of The War of The Worlds | prog | Richard Burton narrates. Justin Hayward sings Forever Autumn.
+1978 | Dire Straits | Dire Straits | soft | Sultans of Swing and Mark Knopfler's clean, fingerpicked guitar.
+1978 | The Cars | The Cars | newwave | Every song sounds like a single.
+1978 | Blondie | Parallel Lines | newwave | Heart of Glass took CBGB to the disco.
+1978 | Van Halen | Van Halen | hard | Eruption: the guitar solo everyone tried to learn.
+1978 | Buzzcocks | Another Music in a Different Kitchen | punk | Punk with pop hooks.
+1979 | Joy Division | Unknown Pleasures | postpunk | The cover shows radio waves from a pulsar.
+1979 | The Clash | London Calling | punk | Punk opens up to reggae, rockabilly and ska.
+1979 | Pink Floyd | The Wall | prog | Another Brick in the Wall and a whole rock opera about isolation.
+1979 | Supertramp | Breakfast in America | soft | The Logical Song and Goodbye Stranger.
+1979 | Public Image Ltd. | Metal Box | postpunk | First released as three 12-inch records in a film tin.
+1979 | Gang of Four | Entertainment! | postpunk | Spiky funk guitar and lyrics about politics.
+1979 | The Police | Reggatta de Blanc | newwave | Message in a Bottle.
+1979 | Neil Young & Crazy Horse | Rust Never Sleeps | hard | "Rock and roll can never die."
+1979 | AC/DC | Highway to Hell | hard | Their last album with Bon Scott.
+1979 | Holger Czukay | Movies | prog | CAN's bassist builds songs out of shortwave radio. | id:6lJ5ddOP5xkzgoMCBADdvI
+
+1980 | Joy Division | Closer | postpunk | Released two months after Ian Curtis died.
+1980 | AC/DC | Back in Black | hard | Made months after Bon Scott's death, now one of the best-selling albums ever.
+1980 | Talking Heads | Remain in Light | newwave | Once in a Lifetime, African rhythms and Brian Eno.
+1980 | The Cure | Seventeen Seconds | postpunk | A Forest, grey and hypnotic.
+1980 | Suicide | Suicide: Alan Vega and Martin Rev | postpunk | Their second album, produced by Ric Ocasek of the Cars. | id:6X3IumYsTS91vfxDVxRd04
+1980 | The Feelies | Crazy Rhythms | alt | Jittery guitars and nonstop drums from New Jersey.
+1980 | Ultravox | Vienna | newwave | The title song was famously kept from number one by Shaddap You Face.
+1980 | Orchestral Manoeuvres In The Dark | Orchestral Manoeuvres In The Dark | newwave | Electricity, their debut single.
+1980 | The Korgis | Dumb Waiters | soft | Everybody's Got to Learn Sometime.
+1981 | Depeche Mode | Speak & Spell | newwave | Just Can't Get Enough. The only album with Vince Clarke.
+1981 | The Human League | Dare | newwave | Don't You Want Me, the UK Christmas number one.
+1981 | Orchestral Manoeuvres In The Dark | Architecture & Morality | newwave | Souvenir and Joan of Arc, synth pop with choirs.
+1981 | Siouxsie and the Banshees | Juju | postpunk | Spellbound and the goth sound taking shape.
+1981 | Modern Eon | Fiction Tales | postpunk | Liverpool post-punk, their only album. | c:GB
+1982 | Duran Duran | Rio | newwave | Yachts, video and Hungry Like the Wolf.
+1982 | A Flock Of Seagulls | A Flock of Seagulls | newwave | I Ran, and that hairdo.
+1982 | Altered Images | Pinky Blue | newwave | Glasgow new wave, bright and bouncy.
+1982 | The Psychedelic Furs | Forever Now | postpunk | Love My Way, produced by Todd Rundgren.
+1982 | The Alan Parsons Project | Eye in the Sky | soft | The title song, and Sirius, the intro used at Chicago Bulls games.
+1982 | Simple Minds | New Gold Dream (81-82-83-84) | newwave | Glowing, widescreen new wave.
+1982 | Roxy Music | Avalon | art | Their last album: smooth, late-night and perfect.
+1982 | The Birthday Party | Junkyard | postpunk | Nick Cave and Rowland S. Howard at their most violent. | c:AU
+1983 | New Order | Power, Corruption & Lies | newwave | Age of Consent. The cover is a painting of roses by Fantin-Latour.
+1983 | Echo & the Bunnymen | Porcupine | postpunk | The Cutter and Back of Love.
+1983 | The The | Soul Mining | newwave | Matt Johnson's This Is the Day.
+1983 | Violent Femmes | Violent Femmes | alt | Blister in the Sun, acoustic punk from Milwaukee.
+1983 | Tears For Fears | The Hurting | newwave | Mad World.
+1983 | Eurythmics | Sweet Dreams (Are Made of This) | newwave | Annie Lennox and Dave Stewart's cold synth hit.
+1983 | Billy Idol | Rebel Yell | hard | More, more, more.
+1983 | Freur | Doot-Doot | newwave | The band later became Underworld.
+1983 | Mike Oldfield | Crises | prog | Moonlight Shadow, sung by Maggie Reilly.
+1983 | R.E.M. | Murmur | alt | College radio's first great album.
+1983 | The Police | Synchronicity | newwave | Every Breath You Take, and the band falling apart.
+1984 | The Smiths | The Smiths | alt | Morrissey's words, Johnny Marr's jangle.
+1984 | Talk Talk | It's My Life | newwave | The title song, then they left synth pop behind.
+1984 | The Cars | Heartbeat City | newwave | Drive and You Might Think.
+1984 | Echo & the Bunnymen | Ocean Rain | postpunk | The Killing Moon.
+1984 | Bruce Springsteen | Born in the U.S.A. | roots | Seven top-10 singles from one album.
+1984 | The Replacements | Let It Be | alt | Minneapolis punks grow up a little.
+1984 | Public Image Ltd. | This Is What You Want... This Is What You Get | postpunk | This Is Not a Love Song.
+1985 | Tears For Fears | Songs from the Big Chair | newwave | Everybody Wants to Rule the World.
+1985 | Dire Straits | Brothers in Arms | soft | One of the first albums to sell a million copies on CD.
+1985 | Kate Bush | Hounds of Love | art | Running Up That Hill, back in the charts in 2022 thanks to Stranger Things.
+1985 | The Jesus and Mary Chain | Psychocandy | dream | Pop songs drowned in feedback, the start of shoegaze.
+1985 | The Cure | The Head on the Door | postpunk | In Between Days and Close to Me.
+1985 | Clan of Xymox | Clan of Xymox | postpunk | Dutch darkwave on 4AD.
+1985 | Chris Rea | Shamrock Diaries | soft | Josephine and Stainsby Girls.
+1985 | Cock Robin | Cock Robin | soft | When Your Heart Is Weak, a huge hit in France.
+1985 | The Wake | Here Comes Everybody | postpunk | Glasgow band on Factory Records. | id:1RD5PJpSa2wCcp8cy99iNF | c:GB
+1985 | The Essence | Purity | postpunk | Dutch post-punk with a Cure-like shimmer.
+1986 | The Smiths | The Queen Is Dead | alt | There Is a Light That Never Goes Out.
+1986 | New Order | Brotherhood | newwave | Bizarre Love Triangle.
+1986 | Talk Talk | The Colour of Spring | art | Life's What You Make It.
+1986 | Cutting Crew | Broadcast | soft | (I Just) Died in Your Arms.
+1986 | Bruce Hornsby and the Range | The Way It Is | soft | The title song was later sampled by 2Pac on Changes.
+1986 | Status Quo | In the Army Now | hard | The title song is a cover of a Dutch duo, Bolland & Bolland.
+1986 | Metallica | Master of Puppets | hard | Thrash metal's peak.
+1986 | Peter Gabriel | So | art | Sledgehammer and its stop-motion video.
+1986 | Clan of Xymox | Medusa | postpunk | Their second album, slower and darker.
+1987 | U2 | The Joshua Tree | alt | With or Without You and the American desert.
+1987 | Guns N' Roses | Appetite for Destruction | hard | The best-selling debut album in US history.
+1987 | Fleetwood Mac | Tango in the Night | soft | Everywhere and Little Lies.
+1988 | Pixies | Surfer Rosa | alt | Where Is My Mind?, recorded by Steve Albini.
+1988 | Sonic Youth | Daydream Nation | alt | Tuned-down guitars and noise, Teen Age Riot.
+1988 | Talk Talk | Spirit of Eden | art | Quiet, improvised and the blueprint for post-rock.
+1988 | Suicide | A Way of Life | postpunk | Their comeback, eight years after the second album.
+1989 | The Cure | Disintegration | postpunk | Lullaby, Pictures of You, Lovesong.
+1989 | Pixies | Doolittle | alt | Debaser, Here Comes Your Man, Monkey Gone to Heaven.
+1989 | The Stone Roses | The Stone Roses | alt | Madchester's swagger: I Wanna Be Adored.
+1989 | Spacemen 3 | Playing with Fire | dream | Drone, gospel and organ from Rugby.
+1989 | Galaxie 500 | On Fire | dream | Dean Wareham's slow, echoing guitar songs.
+
+1990 | Depeche Mode | Violator | newwave | Enjoy the Silence and Personal Jesus.
+1990 | Cocteau Twins | Heaven or Las Vegas | dream | Liz Fraser's voice, words or not.
+1990 | Pixies | Bossanova | alt | Velouria and surf guitar from outer space.
+1991 | Nirvana | Nevermind | alt | It knocked Michael Jackson off the top of the Billboard chart.
+1991 | Pearl Jam | Ten | alt | Alive, Even Flow and Seattle going big.
+1991 | My Bloody Valentine | Loveless | dream | The shoegaze masterpiece that nearly bankrupted Creation Records.
+1991 | Red Hot Chili Peppers | Blood Sugar Sex Magik | alt | Under the Bridge.
+1991 | Primal Scream | Screamadelica | alt | Rock band meets acid house.
+1991 | Guns N' Roses | Use Your Illusion I | hard | November Rain. Released the same day as Use Your Illusion II.
+1991 | The Feelies | Time for a Witness | alt | Their fourth album. They split soon after and came back in 2008.
+1991 | Dire Straits | On Every Street | soft | Their last album.
+1991 | Genesis | We Can't Dance | soft | I Can't Dance and their last album with Phil Collins.
+1992 | R.E.M. | Automatic for the People | alt | Everybody Hurts and Nightswimming.
+1992 | Rage Against the Machine | Rage Against the Machine | hard | Killing in the Name.
+1992 | Pavement | Slanted and Enchanted | indie | Lo-fi, wonky and very influential.
+1992 | Alice in Chains | Dirt | alt | Grunge at its darkest.
+1992 | bel canto | Shimmering, Warm & Bright | dream | Norwegian dream pop.
+1992 | Another Sunny Day | London Weekend | indie | Jangly pop from Sarah Records.
+1993 | Nirvana | In Utero | alt | Recorded by Steve Albini in two weeks.
+1993 | The Smashing Pumpkins | Siamese Dream | alt | Today and Disarm.
+1993 | Mazzy Star | So Tonight That I Might See | dream | Fade Into You.
+1993 | Slowdive | Souvlaki | dream | Panned in its day, loved now.
+1994 | Nirvana | MTV Unplugged in New York | alt | Released seven months after Kurt Cobain's death.
+1994 | Oasis | Definitely Maybe | britpop | The fastest-selling debut album in the UK at the time.
+1994 | Blur | Parklife | britpop | Britpop's very English side.
+1994 | Jeff Buckley | Grace | alt | His only finished album, with Hallelujah.
+1994 | Soundgarden | Superunknown | alt | Black Hole Sun.
+1994 | Weezer | Weezer | alt | The Blue Album: Buddy Holly and Say It Ain't So. | q:Weezer Blue Album
+1994 | Nick Cave & The Bad Seeds | Let Love In | postpunk | Red Right Hand, later the Peaky Blinders theme.
+1995 | Radiohead | The Bends | alt | Fake Plastic Trees and Street Spirit.
+1995 | Oasis | (What's the Story) Morning Glory? | britpop | Wonderwall and Don't Look Back in Anger.
+1995 | Pulp | Different Class | britpop | Common People.
+1996 | Belle and Sebastian | Tigermilk | indie | First pressed as 1,000 vinyl copies for a college music course.
+1996 | Beck | Odelay | alt | Where It's At: samples, slide guitar and a loose groove.
+1997 | Radiohead | OK Computer | alt | Paranoid Android and the end of the 20th century.
+1997 | The Verve | Urban Hymns | britpop | Bitter Sweet Symphony.
+1997 | Spiritualized | Ladies and Gentlemen We Are Floating in Space | dream | Jason Pierce, after Spacemen 3, with gospel choirs and an orchestra.
+1997 | Elliott Smith | Either/Or | indie | Whispered songs and double-tracked vocals.
+1997 | Foo Fighters | The Colour and the Shape | alt | Everlong.
+1998 | Neutral Milk Hotel | In the Aeroplane Over the Sea | indie | A cult record that keeps growing.
+
+2000 | Radiohead | Kid A | alt | Released with no singles. Synths instead of guitars.
+2001 | The Strokes | Is This It | indie | The record that brought guitars back. New York City Cops was swapped out of the US version after 9/11.
+2001 | The White Stripes | White Blood Cells | indie | Fell in Love with a Girl and its Lego video.
+2001 | The Moldy Peaches | The Moldy Peaches | indie | Anyone Else but You, later in the film Juno.
+2002 | The Libertines | Up the Bracket | indie | Produced by Mick Jones of the Clash.
+2002 | Interpol | Turn On the Bright Lights | postpunk | New York in a dark suit.
+2002 | Queens of the Stone Age | Songs for the Deaf | hard | Dave Grohl on drums. No One Knows.
+2003 | The White Stripes | Elephant | indie | Seven Nation Army.
+2003 | The Strokes | Room on Fire | indie | Reptilia and 12:51.
+2003 | Yeah Yeah Yeahs | Fever to Tell | indie | Maps.
+2003 | The Rapture | Echoes | postpunk | House of Jealous Lovers: dance punk, cowbell included.
+2003 | Girls In Hawaii | From Here to There | indie | Belgian indie rock, soft and melodic.
+2003 | Entrance | The Kingdom of Heaven Must Be Taken by Storm | roots | Guy Blakeslee's haunted blues.
+2004 | Arcade Fire | Funeral | indie | Wake Up and a whole orchestra of friends.
+2004 | Franz Ferdinand | Franz Ferdinand | indie | Take Me Out.
+2004 | The Libertines | The Libertines | indie | Can't Stand Me Now, about the band falling apart.
+2004 | The Killers | Hot Fuss | indie | Mr. Brightside, which spent years in the UK Top 100.
+2006 | Arctic Monkeys | Whatever People Say I Am, That's What I'm Not | indie | The fastest-selling debut in UK chart history at the time.
+2007 | Radiohead | In Rainbows | alt | Released online at a price you chose yourself.
+2007 | LCD Soundsystem | Sound of Silver | postpunk | All My Friends.
+2007 | MGMT | Oracular Spectacular | psych | Kids, Time to Pretend, Electric Feel.
+2007 | The National | Boxer | indie | Fake Empire.
+2007 | Babyshambles | Shotter's Nation | indie | Pete Doherty's band after the Libertines.
+2007 | The Wombats | A Guide to Love, Loss & Desperation | indie | Let's Dance to Joy Division.
+2007 | Coconut Records | Nighttiming | indie | Jason Schwartzman's solo project.
+2007 | Midnight Juggernauts | Dystopia | indie | Australian space disco rock.
+2007 | John Maus | Love Is Real | newwave | Church organ synths and a deep, echoing voice.
+2007 | Ultra Orange & Emmanuelle | Ultra Orange & Emmanuelle | indie | Emmanuelle Seigner sings over a Velvet-style band.
+2008 | Late of the Pier | Fantasy Black Channel | indie | Produced by Erol Alkan.
+2008 | King Tuff | Was Dead | indie | Sunny garage rock from Vermont.
+2008 | Flogging Molly | Float | punk | Irish punk from Los Angeles.
+2009 | Yeah Yeah Yeahs | It's Blitz! | indie | Heads Will Roll goes disco.
+2009 | Animal Collective | Merriweather Post Pavilion | psych | My Girls and Summertime Clothes.
+2009 | The xx | xx | indie | Whispered duets and a lot of space.
+2009 | Julian Casablancas | Phrazes for the Young | indie | The Strokes singer's synth-heavy solo album.
+2009 | Jacuzzi Boys | No Seasons | indie | Miami garage rock.
+2009 | Rowland S. Howard | Pop Crimes | postpunk | Released two months before his death.
+2010 | Tame Impala | Innerspeaker | psych | Kevin Parker's one-man psych band from Perth.
+2011 | Part Time | What Would You Say? | indie | David Loiseau's bedroom recordings, all tape hiss and chorus pedal.
+2011 | John Maus | We Must Become the Pitiless Censors of Ourselves | newwave | Believer and Hey Moon.
+2011 | The Strokes | Angles | indie | Under Cover of Darkness.
+2011 | The Rapture | In the Grace of Your Love | indie | How Deep Is Your Love?
+2011 | IS TROPICAL | Native To | indie | London indie with a beat.
+2012 | Tame Impala | Lonerism | psych | Feels Like We Only Go Backwards.
+2012 | Black Marble | A Different Arrangement | postpunk | Brooklyn cold wave.
+2013 | Arctic Monkeys | AM | indie | Do I Wanna Know?
+2013 | The Strokes | Comedown Machine | indie | One Way Trigger and its falsetto.
+2013 | Connan Mockasin | Caramel | psych | Woozy, sweet and very slow.
+2013 | Soviet Soviet | Fate | postpunk | Italian post-punk, fast and cold.
+2013 | Kevin Morby | Harlem River | roots | Folk rock for long walks in New York.
+2014 | Mac DeMarco | Salad Days | indie | Slacker rock with a chorus pedal.
+2014 | TOPS | Picture You Staring | indie | Montreal soft rock.
+2014 | Ariel Pink | pom pom | indie | A hall of mirrors of 70s and 80s pop.
+2014 | Future Islands | Singles | newwave | Seasons, and the Letterman show performance that went viral.
+2014 | Metronomy | Love Letters | indie | Recorded in an analog studio in London.
+2014 | TV Girl | French Exit | indie | Samples, crushes and bad decisions.
+2014 | The War on Drugs | Lost in the Dream | indie | Red Eyes and long highway rock.
+2015 | Tame Impala | Currents | psych | The Less I Know the Better.
+2015 | Part Time | Return to Cherry | indie | Lo-fi soft rock, sunlit and hazy.
+2016 | David Bowie | Blackstar | art | Released on his 69th birthday, two days before his death.
+2016 | Andy Shauf | The Party | roots | A whole album set at one house party.
+2016 | Morgan Delt | Phase Zero | psych | Californian psych pop in mono-tinted colors.
+2016 | Johnny Mafia | Michel Michel Michel | punk | Garage punk from Sens, France.
+2017 | The xx | I See You | indie | On Hold samples Hall & Oates.
+2017 | Ron Gallo | HEAVY META | indie | Philadelphia garage rock with a sense of humor.
+2017 | Timber Timbre | Sincerely, Future Pollution | indie | Dystopian synths from Canada.
+2017 | Her's | Songs of Her's | indie | Liverpool duo, jangly and charming.
+2017 | Destroyer | ken | newwave | Dan Bejar goes back to the sound of 80s Britain.
+2017 | John Maus | Screen Memories | newwave | Recorded alone in rural Minnesota.
+2018 | IDLES | Joy as an Act of Resistance. | punk | Loud, angry and kind at the same time.
+2018 | Connan Mockasin | Jassbusters | indie | Made alongside a film about a music teacher.
+2019 | Fontaines D.C. | Dogrel | postpunk | Dublin poetry over post-punk guitars.
+2020 | The Strokes | The New Abnormal | indie | Won the Grammy for Best Rock Album.
+2020 | Nation of Language | Introduction, Presence | newwave | Brooklyn synth pop that sounds like a lost OMD record.
+2020 | Phoebe Bridgers | Punisher | indie | Kyoto and I Know the End.
+2021 | Turnstile | GLOW ON | punk | Hardcore punk that opens up to everyone.
+2022 | Black Country, New Road | Ants From Up There | indie | Their singer left four days before it came out.
+2022 | Wet Leg | Wet Leg | indie | Chaise Longue.
+2023 | The Rolling Stones | Hackney Diamonds | roots | Their first album of new songs since 2005.
+2023 | boygenius | the record | indie | Three songwriters, one band.
+2024 | Fontaines D.C. | Romance | postpunk | Starburster.
+2024 | The Voidz | Like All Before You | indie | Julian Casablancas' other band.
+2024 | Mount Kimbie | The Sunset Violent | indie | The electronic duo turns into a guitar band, with King Krule.
+2024 | The Last Dinner Party | Prelude to Ecstasy | art | Theatrical art rock with Nothing Matters.
+2025 | Geese | Getting Killed | indie | Brooklyn band, loose and wild.
+2025 | John Maus | Later Than You Think | newwave | His first album in eight years.
+2025 | Hotel Lux | The Bitter Cup | postpunk | London post-punk with a pub-rock grin.
+2026 | The Strokes | Reality Awaits | indie | Their first album in six years.
+2026 | Part Time | Cyber Tongue | indie | The newest record on this timeline.
