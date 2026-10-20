@@ -325,7 +325,6 @@ export function Galaxy({
                       clipPath="url(#galaxy-disc)"
                     />
                   )}
-                  <circle className="galaxy-hole" r={Math.max(1.2, star.size * 0.06)} />
                   {songs > 0 && (
                     <g className="galaxy-heart" transform={`translate(${half * 0.72} ${-half * 0.72})`}>
                       <circle r={Math.max(4.5, star.size * 0.2)} />

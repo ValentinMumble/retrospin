@@ -1493,11 +1493,6 @@ button.explore-item:hover {
   filter: drop-shadow(0 0 5px var(--heart));
 }
 
-.galaxy-hole {
-  fill: var(--bg);
-  pointer-events: none;
-}
-
 .galaxy-heart {
   pointer-events: none;
 }
