@@ -32,7 +32,8 @@ interface GalaxyProps {
 
 interface Star extends SimulationNodeDatum {
   album: Album
-  radius: number
+  /** Width of the cover, in galaxy units. */
+  size: number
 }
 
 interface Beam extends SimulationLinkDatum<Star> {
@@ -40,8 +41,13 @@ interface Beam extends SimulationLinkDatum<Star> {
   kind: GalaxyLink[3]
 }
 
-const RING_START = 70
-const RING_STEP = 14
+const RING_START = 90
+const RING_STEP = 19
+
+/** Spotify's 64 px version of a cover: light enough to show every album at once. */
+function thumbnail(url: string) {
+  return url.replace('ab67616d00001e02', 'ab67616d00004851').replace('ab67616d0000b273', 'ab67616d00004851')
+}
 
 /** Each year has its ring: the first year near the centre, today at the rim. */
 function ringRadius(year: number, firstYear: number) {
@@ -77,6 +83,8 @@ export function Galaxy({
   const transformRef = useRef<ZoomTransform>(zoomIdentity)
   const [size, setSize] = useState({ width: 0, height: 0 })
   const [hover, setHover] = useState<{ star: Star; x: number; y: number } | null>(null)
+  /** Every link at once is a lot to read: by default only the selected (or hovered) album's links show. */
+  const [showAllLinks, setShowAllLinks] = useState(false)
 
   const layout = useMemo(() => {
     const ids = new Set(albums.map((album) => album.id))
@@ -91,7 +99,7 @@ export function Galaxy({
       const radius = ringRadius(album.year, firstYear)
       return {
         album,
-        radius: Math.min(8, 2.5 + Math.sqrt(degree.get(album.id) ?? 0) * 0.9),
+        size: 24 + Math.min(12, Math.sqrt(degree.get(album.id) ?? 0) * 3),
         x: Math.cos(angle) * radius,
         y: Math.sin(angle) * radius,
       }
@@ -102,14 +110,14 @@ export function Galaxy({
         'link',
         forceLink<Star, Beam>(beams)
           .id((star) => star.album.id)
-          .distance(28)
+          .distance(42)
           .strength((beam) => 0.05 + beam.strength * 0.25),
       )
       .force('charge', forceManyBody<Star>().strength(-12))
       .force('radial', forceRadial<Star>((star) => ringRadius(star.album.year, firstYear)).strength(0.55))
       .force(
         'collide',
-        forceCollide<Star>((star) => star.radius + 1.5),
+        forceCollide<Star>((star) => star.size * 0.72 + 3),
       )
       .stop()
     for (let tick = 0; tick < 300; tick += 1) simulation.tick()
@@ -249,6 +257,8 @@ export function Galaxy({
               const source = beam.source as Star
               const target = beam.target as Star
               const active = Boolean(selectedId && (source.album.id === selectedId || target.album.id === selectedId))
+              const hovered = hover !== null && (source === hover.star || target === hover.star)
+              if (!showAllLinks && !active && !hovered) return null
               const dim = faded(source.album.id) || faded(target.album.id)
               return (
                 <line
@@ -266,6 +276,10 @@ export function Galaxy({
           <g className="galaxy-stars">
             {layout.stars.map((star) => {
               const { album } = star
+              const half = star.size / 2
+              const cover = album.spotify?.coverSmall
+              // Sharp covers for the selected album and its neighbours, light thumbnails for the rest.
+              const sharp = neighbours?.has(album.id) ?? false
               const classes = [
                 'galaxy-star',
                 album.id === selectedId ? 'is-selected' : '',
@@ -285,10 +299,19 @@ export function Galaxy({
                   }}
                   onPointerLeave={() => setHover((current) => (current?.star === star ? null : current))}
                 >
-                  <circle className="galaxy-halo" r={star.radius * 2.6} />
-                  <circle className="galaxy-core" r={star.radius} />
+                  <rect className="galaxy-frame" x={-half} y={-half} width={star.size} height={star.size} />
+                  {cover && (
+                    <image
+                      href={sharp ? cover : thumbnail(cover)}
+                      x={-half}
+                      y={-half}
+                      width={star.size}
+                      height={star.size}
+                      preserveAspectRatio="xMidYMid slice"
+                    />
+                  )}
                   {labelled(album.id) && (
-                    <text className="galaxy-label" x={star.radius + 4} y={3}>
+                    <text className="galaxy-label" x={0} y={half + 12}>
                       {album.title}
                     </text>
                   )}
@@ -311,13 +334,23 @@ export function Galaxy({
         </div>
       )}
 
-      <p className="galaxy-hint">
-        {linksError
-          ? `No links yet: ${linksError}`
-          : links === null
-            ? 'Charting the galaxy…'
-            : 'The centre is 1955, the rim is today. Lines join similar records. Drag to move, scroll or pinch to zoom, click a star.'}
-      </p>
+      <div className="galaxy-hint">
+        <p>
+          {linksError
+            ? `No links yet: ${linksError}`
+            : links === null
+              ? 'Charting the galaxy…'
+              : 'The centre is 1955, the rim is today. Similar records sit close. Drag to move, scroll or pinch to zoom, click a cover to see its links.'}
+        </p>
+        <button
+          type="button"
+          className="toggle"
+          aria-pressed={showAllLinks}
+          onClick={() => setShowAllLinks((value) => !value)}
+        >
+          {showAllLinks ? 'Hide links' : 'Show all links'}
+        </button>
+      </div>
     </div>
   )
 }
