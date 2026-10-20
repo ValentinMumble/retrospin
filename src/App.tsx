@@ -192,19 +192,48 @@ export default function App() {
   )
 
   const albums = useMemo(() => {
-    const needle = fold(query.trim())
     return allAlbums.filter(
       (album) =>
         (activeScenes.size === 0 || activeScenes.has(album.scene)) &&
         (!mineOnly || Boolean(likes?.has(album.id))) &&
-        (activeCountries.size === 0 || (album.country !== null && activeCountries.has(album.country))) &&
-        (!needle || fold(`${album.artist} ${album.title}`).includes(needle)),
+        (activeCountries.size === 0 || (album.country !== null && activeCountries.has(album.country))),
     )
-  }, [allAlbums, query, activeScenes, mineOnly, activeCountries, likes])
+  }, [allAlbums, activeScenes, mineOnly, activeCountries, likes])
 
   const selected = allAlbums.find((album) => album.id === selectedId) ?? null
   // The light-up belongs to the album that turned it on: opening another album or closing the panel ends it.
   const litIds = lit && lit.seedId === selectedId ? lit.ids : null
+  // Search highlights instead of hiding: matching albums stay bright, the others dim.
+  const needle = fold(query.trim())
+  const matchList = useMemo(
+    () => (needle ? albums.filter((album) => fold(`${album.artist} ${album.title}`).includes(needle)) : null),
+    [albums, needle],
+  )
+  const matches = useMemo(() => (matchList ? new Set(matchList.map((album) => album.id)) : null), [matchList])
+  const highlighted = litIds ?? matches
+  const firstMatchId = matchList?.[0]?.id ?? null
+
+  // While typing, glide the timeline to the first match.
+  useEffect(() => {
+    if (!firstMatchId) return
+    const timer = window.setTimeout(() => timelineRef.current?.scrollToAlbum(firstMatchId), 350)
+    return () => window.clearTimeout(timer)
+  }, [firstMatchId])
+
+  /** Enter in the search box opens the next match (Shift+Enter the previous one). */
+  const stepMatch = (direction: 1 | -1) => {
+    if (!matchList?.length) return
+    const index = matchList.findIndex((album) => album.id === selectedId)
+    const nextIndex =
+      index < 0
+        ? direction === 1
+          ? 0
+          : matchList.length - 1
+        : (index + direction + matchList.length) % matchList.length
+    const next = matchList[nextIndex]
+    setSelectedId(next.id)
+    timelineRef.current?.scrollToAlbum(next.id)
+  }
   const selectedIndex = albums.findIndex((album) => album.id === selectedId)
   const latest = allAlbums[allAlbums.length - 1]
 
@@ -295,7 +324,7 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [selectedId, step, litIds])
 
-  const filtered = query.trim() !== '' || activeScenes.size > 0 || mineOnly || activeCountries.size > 0
+  const filtered = activeScenes.size > 0 || mineOnly || activeCountries.size > 0
   const activeFilterCount = activeScenes.size + activeCountries.size + (mineOnly ? 1 : 0)
   const openSuggest = (search = '') => {
     setSuggestQuery(search)
@@ -343,6 +372,11 @@ export default function App() {
             aria-label="Search artist or album"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter') return
+              event.preventDefault()
+              stepMatch(event.shiftKey ? -1 : 1)
+            }}
           />
           <button
             type="button"
@@ -449,7 +483,9 @@ export default function App() {
         ))}
         {spotifyError && <span className="notice">{spotifyError}</span>}
         <span className="result-count">
-          {albums.length} of {allAlbums.length} albums
+          {matches
+            ? `${matches.size} ${matches.size === 1 ? 'match' : 'matches'}${matches.size > 0 ? ', Enter to step through' : ''}`
+            : `${albums.length} of ${allAlbums.length} albums`}
         </span>
       </div>
 
@@ -483,7 +519,7 @@ export default function App() {
         firstYear={years.first}
         lastYear={years.last}
         likes={likes}
-        lit={litIds}
+        lit={highlighted}
         selectedId={selectedId}
         onSelect={setSelectedId}
         onCenterYearChange={setCenterYear}
@@ -581,7 +617,7 @@ export default function App() {
           linksError={galaxyError}
           likes={likes}
           selectedId={selectedId}
-          lit={litIds}
+          lit={highlighted}
           panelOpen={selected !== null}
           firstYear={years.first}
           lastYear={years.last}

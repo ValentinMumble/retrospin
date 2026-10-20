@@ -65,6 +65,8 @@ export function AlbumPanel({
   const scene = SCENES[album.scene]
 
   useEffect(() => {
+    // Opened from the search box (Enter steps through matches): leave the focus there.
+    if (document.activeElement?.closest('.search')) return
     closeRef.current?.focus({ preventScroll: true })
   }, [])
 
