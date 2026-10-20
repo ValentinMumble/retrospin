@@ -1485,6 +1485,32 @@ button.explore-item:hover {
 
 .galaxy-star.is-liked .galaxy-frame {
   stroke: var(--heart);
+  stroke-width: 2;
+}
+
+.galaxy-star.has-songs .galaxy-frame {
+  stroke-width: 3.5;
+  filter: drop-shadow(0 0 5px var(--heart));
+}
+
+.galaxy-hole {
+  fill: var(--bg);
+  pointer-events: none;
+}
+
+.galaxy-heart {
+  pointer-events: none;
+}
+
+.galaxy-heart circle {
+  fill: var(--heart);
+}
+
+.galaxy-heart text {
+  fill: #fff;
+  font-size: 7px;
+  text-anchor: middle;
+  dominant-baseline: central;
 }
 
 .galaxy-star.is-selected .galaxy-frame {
@@ -1561,6 +1587,15 @@ button.explore-item:hover {
 .galaxy-hint .toggle {
   flex: none;
   pointer-events: auto;
+}
+
+.galaxy-hint .toggle[aria-pressed='true'] {
+  border-color: var(--heart);
+  color: var(--heart);
+}
+
+.galaxy-hint p {
+  margin-right: auto;
 }
 
 /* Touch screens: bigger targets, swipe hint instead of keys */

@@ -85,6 +85,8 @@ export function Galaxy({
   const [hover, setHover] = useState<{ star: Star; x: number; y: number } | null>(null)
   /** Every link at once is a lot to read: by default only the selected (or hovered) album's links show. */
   const [showAllLinks, setShowAllLinks] = useState(false)
+  /** Dims every album that is not by an artist from the Spotify liked songs. */
+  const [highlightLikes, setHighlightLikes] = useState(false)
 
   const layout = useMemo(() => {
     const ids = new Set(albums.map((album) => album.id))
@@ -117,7 +119,7 @@ export function Galaxy({
       .force('radial', forceRadial<Star>((star) => ringRadius(star.album.year, firstYear)).strength(0.55))
       .force(
         'collide',
-        forceCollide<Star>((star) => star.size * 0.72 + 3),
+        forceCollide<Star>((star) => star.size / 2 + 3),
       )
       .stop()
     for (let tick = 0; tick < 300; tick += 1) simulation.tick()
@@ -224,7 +226,12 @@ export function Galaxy({
   const decades: number[] = []
   for (let year = Math.ceil(firstYear / 10) * 10; year <= lastYear; year += 10) decades.push(year)
 
-  const faded = (id: string) => (neighbours ? !neighbours.has(id) : lit ? !lit.has(id) : false)
+  const faded = (id: string) => {
+    if (neighbours) return !neighbours.has(id)
+    if (lit) return !lit.has(id)
+    if (highlightLikes && likes) return !likes.has(id)
+    return false
+  }
   const labelled = (id: string) => Boolean(neighbours?.has(id)) || hover?.star.album.id === id
 
   return (
@@ -241,6 +248,11 @@ export function Galaxy({
         aria-label="Galaxy of albums: similar records are linked"
         onPointerLeave={() => setHover(null)}
       >
+        <defs>
+          <clipPath id="galaxy-disc" clipPathUnits="objectBoundingBox">
+            <circle cx={0.5} cy={0.5} r={0.5} />
+          </clipPath>
+        </defs>
         <g ref={sceneRef}>
           <g className="galaxy-rings">
             {decades.map((year) => (
@@ -280,11 +292,13 @@ export function Galaxy({
               const cover = album.spotify?.coverSmall
               // Sharp covers for the selected album and its neighbours, light thumbnails for the rest.
               const sharp = neighbours?.has(album.id) ?? false
+              const songs = likes?.get(album.id)?.songs.length ?? 0
               const classes = [
                 'galaxy-star',
                 album.id === selectedId ? 'is-selected' : '',
                 faded(album.id) ? 'is-faded' : '',
                 likes?.has(album.id) ? 'is-liked' : '',
+                songs > 0 ? 'has-songs' : '',
               ]
               return (
                 <g
@@ -299,7 +313,7 @@ export function Galaxy({
                   }}
                   onPointerLeave={() => setHover((current) => (current?.star === star ? null : current))}
                 >
-                  <rect className="galaxy-frame" x={-half} y={-half} width={star.size} height={star.size} />
+                  <circle className="galaxy-frame" r={half} />
                   {cover && (
                     <image
                       href={sharp ? cover : thumbnail(cover)}
@@ -308,7 +322,15 @@ export function Galaxy({
                       width={star.size}
                       height={star.size}
                       preserveAspectRatio="xMidYMid slice"
+                      clipPath="url(#galaxy-disc)"
                     />
+                  )}
+                  <circle className="galaxy-hole" r={Math.max(1.2, star.size * 0.06)} />
+                  {songs > 0 && (
+                    <g className="galaxy-heart" transform={`translate(${half * 0.72} ${-half * 0.72})`}>
+                      <circle r={Math.max(4.5, star.size * 0.2)} />
+                      <text>♥</text>
+                    </g>
                   )}
                   {labelled(album.id) && (
                     <text className="galaxy-label" x={0} y={half + 12}>
@@ -340,8 +362,18 @@ export function Galaxy({
             ? `No links yet: ${linksError}`
             : links === null
               ? 'Charting the galaxy…'
-              : 'The centre is 1955, the rim is today. Similar records sit close. Drag to move, scroll or pinch to zoom, click a cover to see its links.'}
+              : 'The centre is 1955, the rim is today. Similar records sit close. A pink ring means an artist you like, a heart means songs you liked. Drag, scroll or pinch to move, click a record to see its links.'}
         </p>
+        {likes && (
+          <button
+            type="button"
+            className="toggle"
+            aria-pressed={highlightLikes}
+            onClick={() => setHighlightLikes((value) => !value)}
+          >
+            <span aria-hidden="true">♥</span> {highlightLikes ? 'Show everything' : 'Highlight my likes'}
+          </button>
+        )}
         <button
           type="button"
           className="toggle"
