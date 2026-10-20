@@ -28,6 +28,8 @@ export interface TimelineHandle {
 }
 
 interface TimelineProps {
+  /** Hidden while the galaxy shows: it stays mounted so it keeps its place. */
+  hidden: boolean
   albums: Album[]
   /** When set, only these albums stay bright (light up related). */
   lit: ReadonlySet<string> | null
@@ -41,6 +43,27 @@ interface TimelineProps {
   outro: ReactNode
   empty: ReactNode
   ref?: Ref<TimelineHandle>
+}
+
+const YEAR_KEY = 'retrospin.year'
+
+/** The year in the middle of the screen on the last visit, or null for the start. */
+function savedYear() {
+  try {
+    const year = Number(localStorage.getItem(YEAR_KEY))
+    return Number.isInteger(year) && year > 1900 ? year : null
+  } catch {
+    return null
+  }
+}
+
+function saveYear(year: number | null) {
+  try {
+    if (year === null) localStorage.removeItem(YEAR_KEY)
+    else localStorage.setItem(YEAR_KEY, String(year))
+  } catch {
+    // Storage blocked: the position just won't be remembered.
+  }
 }
 
 function scrollBehavior(smooth = true): ScrollBehavior {
@@ -123,6 +146,7 @@ const YearBlocks = memo(function YearBlocks({ layout, lit, likes, selectedId, on
 })
 
 export function Timeline({
+  hidden,
   albums,
   lit,
   firstYear,
@@ -167,11 +191,24 @@ export function Timeline({
   }, [])
 
   // When filters or the window size change the layout, keep the same year in the middle of the screen.
+  // On the first layout with albums (and a visible timeline), go back to the year saved on the last visit.
+  const restored = useRef(false)
   useLayoutEffect(() => {
     const scroller = scrollerRef.current
+    if (!scroller) return
+    let restoring = false
+    if (!restored.current && albums.length > 0 && scroller.clientWidth > 0) {
+      restored.current = true
+      anchorYear.current = savedYear()
+      restoring = anchorYear.current !== null
+    }
     const block = layout.blocks.find((candidate) => candidate.year === anchorYear.current)
-    if (scroller && block) scroller.scrollLeft = block.x + block.width / 2 - scroller.clientWidth / 2
-  }, [layout])
+    if (block) scroller.scrollLeft = block.x + block.width / 2 - scroller.clientWidth / 2
+    if (block && restoring) {
+      lastCenter.current = block.year
+      centerCallback.current(block.year)
+    }
+  }, [layout, albums.length])
 
   const handleScroll = useCallback(() => {
     if (frame.current) return
@@ -182,6 +219,7 @@ export function Timeline({
       setScrollLeft(scroller.scrollLeft)
       const center = yearAt(layoutRef.current, scroller.scrollLeft + scroller.clientWidth / 2)
       anchorYear.current = scroller.scrollLeft < 8 ? null : center
+      if (restored.current && scroller.clientWidth > 0) saveYear(anchorYear.current)
       if (center !== lastCenter.current) {
         lastCenter.current = center
         centerCallback.current(center)
@@ -298,7 +336,7 @@ export function Timeline({
   })
 
   return (
-    <div className="timeline" style={style}>
+    <div className="timeline" style={style} hidden={hidden}>
       <div ref={scrollerRef} className="scroller" onScroll={handleScroll}>
         <div className="track" style={{ width: layout.total }}>
           <Eras layout={layout} />

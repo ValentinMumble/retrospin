@@ -8,6 +8,8 @@ export const ALBUMS = 'retrospin:albums'
 export const SPOTIFY_IDS = 'retrospin:spotify-ids'
 /** Suggestions waiting for review, by Spotify album id. */
 export const PENDING = 'retrospin:pending'
+/** Last.fm's similar artists of each artist on the timeline, as [name, match] pairs, for the galaxy links. */
+export const SIMILAR = 'retrospin:similar'
 
 export interface Suggestion extends Album {
   suggestedAt: string

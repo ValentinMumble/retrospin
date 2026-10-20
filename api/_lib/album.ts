@@ -1,9 +1,10 @@
 import type { Album } from '../../src/types'
+import { similarArtists } from './lastfm.js'
 import { artistCountry } from './musicbrainz.js'
 import { normalize, slug, tidy } from './names.js'
 import { detectScene } from './scene.js'
 import { albumDetails } from './spotify.js'
-import { ALBUMS, PENDING, redis, SPOTIFY_IDS } from './store.js'
+import { ALBUMS, PENDING, redis, SIMILAR, SPOTIFY_IDS } from './store.js'
 
 /** Builds a timeline album from a Spotify album: cover, links, songs, plus scene (Last.fm) and country (MusicBrainz). */
 export async function buildAlbum(spotifyId: string, options: { note: string; year: number | null }): Promise<Album> {
@@ -49,5 +50,19 @@ export async function publish(album: Album) {
     await store.sadd(SPOTIFY_IDS, stored.spotify.id)
     await store.hdel(PENDING, stored.spotify.id)
   }
+  await rememberSimilarArtists(stored.artist)
   return stored
+}
+
+/** Stores the artist's similar artists once, so the new album gets its links in the galaxy. Best effort. */
+async function rememberSimilarArtists(artist: string) {
+  try {
+    const store = redis()
+    if (await store.hexists(SIMILAR, artist)) return
+    let artists = await similarArtists(artist)
+    if (artists.length === 0 && artist.includes(' & ')) artists = await similarArtists(artist.split(' & ')[0])
+    await store.hset(SIMILAR, { [artist]: artists.slice(0, 100).map((item) => [item.name, item.match]) })
+  } catch (error) {
+    console.error('Could not store similar artists', artist, error)
+  }
 }

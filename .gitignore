@@ -28,3 +28,6 @@ scripts/.cache/
 .vercel
 .env*
 !.env.example
+
+# Python bytecode from the data scripts
+__pycache__/

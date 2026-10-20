@@ -83,7 +83,7 @@ export function AlbumPanel({
     const onClick = (event: MouseEvent) => {
       const target = event.target
       if (!(target instanceof Element)) return
-      if (panelRef.current?.contains(target) || target.closest('.card, .dialog-backdrop')) return
+      if (panelRef.current?.contains(target) || target.closest('.card, .galaxy-star, .dialog-backdrop')) return
       onCloseRef.current()
     }
     document.addEventListener('click', onClick)

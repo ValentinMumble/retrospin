@@ -1360,6 +1360,198 @@ button.explore-item:hover {
   opacity: 0.12;
 }
 
+/* Views: timeline or galaxy */
+
+.view-switch {
+  display: inline-flex;
+  flex: none;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-raised);
+}
+
+.view-switch button {
+  padding: 5px 11px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--muted);
+  font-size: 13.5px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.view-switch button[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--on-scene);
+  font-weight: 600;
+}
+
+.timeline[hidden],
+.decades[hidden] {
+  display: none;
+}
+
+/* Galaxy */
+
+.galaxy {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 55%);
+  cursor: grab;
+  touch-action: none;
+}
+
+.galaxy:active {
+  cursor: grabbing;
+}
+
+.galaxy-sky,
+.galaxy-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.galaxy-sky {
+  pointer-events: none;
+}
+
+.galaxy-sky circle {
+  fill: var(--ink);
+}
+
+.galaxy-rings circle {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+  vector-effect: non-scaling-stroke;
+}
+
+.galaxy-rings text {
+  fill: var(--faint);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-anchor: middle;
+}
+
+.galaxy-link {
+  stroke: var(--ink);
+  opacity: 0.13;
+  vector-effect: non-scaling-stroke;
+  transition: opacity 0.25s;
+}
+
+.galaxy-link.is-artist {
+  stroke: var(--accent);
+  opacity: 0.25;
+  stroke-dasharray: 3 3;
+}
+
+.galaxy-link.is-faded {
+  opacity: 0.03;
+}
+
+.galaxy-link.is-active {
+  stroke: var(--accent);
+  opacity: 0.85;
+}
+
+.galaxy-star {
+  cursor: pointer;
+  transition: opacity 0.25s;
+}
+
+.galaxy-core {
+  fill: currentColor;
+}
+
+.galaxy-halo {
+  fill: currentColor;
+  opacity: 0.12;
+  transition: opacity 0.2s;
+}
+
+.galaxy-star:hover .galaxy-halo {
+  opacity: 0.4;
+}
+
+.galaxy-star.is-liked .galaxy-core {
+  stroke: var(--heart);
+  stroke-width: 1.2;
+}
+
+.galaxy-star.is-selected .galaxy-halo {
+  opacity: 0.55;
+}
+
+.galaxy-star.is-selected .galaxy-core {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.galaxy-star.is-faded {
+  opacity: 0.14;
+}
+
+.galaxy-label {
+  fill: var(--ink);
+  font-family: var(--font-body);
+  font-size: 10px;
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 3px;
+  pointer-events: none;
+}
+
+.galaxy-tooltip {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 280px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-panel);
+  box-shadow: 0 12px 30px -12px var(--shadow);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.galaxy-tooltip img {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 3px;
+}
+
+.galaxy-tooltip b {
+  display: block;
+}
+
+.galaxy-tooltip span span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.galaxy-hint {
+  position: absolute;
+  bottom: 14px;
+  left: 20px;
+  max-width: 560px;
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--faint);
+  pointer-events: none;
+}
+
 /* Touch screens: bigger targets, swipe hint instead of keys */
 
 @media (pointer: coarse) {

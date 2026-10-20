@@ -84,3 +84,10 @@ export interface TopAlbum {
 export async function fetchTopAlbum(artist: string) {
   return (await request<{ album: TopAlbum | null }>(`/api/top-album?artist=${encodeURIComponent(artist)}`)).album
 }
+
+/** [album id, album id, strength 0-1, kind] */
+export type GalaxyLink = [string, string, number, 'similar' | 'artist']
+
+export async function fetchGalaxyLinks() {
+  return (await request<{ links: GalaxyLink[] }>('/api/galaxy')).links
+}

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { fetchAlbums, fetchSuggestions } from './api'
+import { fetchAlbums, fetchGalaxyLinks, fetchSuggestions, type GalaxyLink } from './api'
 import { AlbumPanel } from './components/AlbumPanel'
 import { ReviewDialog } from './components/ReviewDialog'
 import { SuggestDialog } from './components/SuggestDialog'
 import { ThemePicker } from './components/ThemePicker'
+import { Galaxy } from './components/Galaxy'
 import { Timeline, type TimelineHandle } from './components/Timeline'
 import { countryName, flag } from './countries'
 import { matchLikes } from './likes'
@@ -73,6 +74,37 @@ export default function App() {
   /** "Light up related" from an album's Explore section: only these albums stay bright. */
   const [lit, setLit] = useState<{ seedId: string; ids: ReadonlySet<string> } | null>(null)
   const [suggestQuery, setSuggestQuery] = useState('')
+  const [view, setView] = useState<'timeline' | 'galaxy'>(() => {
+    try {
+      return localStorage.getItem('retrospin.view') === 'galaxy' ? 'galaxy' : 'timeline'
+    } catch {
+      return 'timeline'
+    }
+  })
+  const [galaxyLinks, setGalaxyLinks] = useState<GalaxyLink[] | null>(null)
+  const [galaxyError, setGalaxyError] = useState<string | null>(null)
+
+  const changeView = (next: 'timeline' | 'galaxy') => {
+    setView(next)
+    try {
+      localStorage.setItem('retrospin.view', next)
+    } catch {
+      // Storage blocked: the view just won't be remembered.
+    }
+  }
+
+  // The galaxy's links load the first time it is shown.
+  useEffect(() => {
+    if (view !== 'galaxy' || galaxyLinks || galaxyError) return
+    const load = async () => {
+      try {
+        setGalaxyLinks(await fetchGalaxyLinks())
+      } catch (error) {
+        setGalaxyError(error instanceof Error ? error.message : String(error))
+      }
+    }
+    void load()
+  }, [view, galaxyLinks, galaxyError])
 
   const loadAlbums = useCallback(async () => {
     try {
@@ -290,7 +322,7 @@ export default function App() {
           <span className="brand-disc" aria-hidden="true" />
           Retrospin
         </button>
-        <nav className="decades" aria-label="Jump to a decade">
+        <nav className="decades" aria-label="Jump to a decade" hidden={view === 'galaxy'}>
           {DECADES.map((decade) => (
             <button
               key={decade}
@@ -320,6 +352,28 @@ export default function App() {
           >
             Filters{activeFilterCount > 0 && <b className="count-badge">{activeFilterCount}</b>}
           </button>
+          <div className="view-switch" role="group" aria-label="View">
+            <button
+              type="button"
+              aria-pressed={view === 'timeline'}
+              aria-label="Timeline"
+              title="Timeline"
+              onClick={() => changeView('timeline')}
+            >
+              <span aria-hidden="true">↔</span>
+              <span className="wide-label"> Timeline</span>
+            </button>
+            <button
+              type="button"
+              aria-pressed={view === 'galaxy'}
+              aria-label="Galaxy"
+              title="Galaxy"
+              onClick={() => changeView('galaxy')}
+            >
+              <span aria-hidden="true">✦</span>
+              <span className="wide-label"> Galaxy</span>
+            </button>
+          </div>
         </div>
         <div className="actions">
           <button
@@ -424,6 +478,7 @@ export default function App() {
 
       <Timeline
         ref={timelineRef}
+        hidden={view === 'galaxy'}
         albums={albums}
         firstYear={years.first}
         lastYear={years.last}
@@ -518,6 +573,21 @@ export default function App() {
           )
         }
       />
+
+      {view === 'galaxy' && (
+        <Galaxy
+          albums={albums}
+          links={galaxyLinks}
+          linksError={galaxyError}
+          likes={likes}
+          selectedId={selectedId}
+          lit={litIds}
+          panelOpen={selected !== null}
+          firstYear={years.first}
+          lastYear={years.last}
+          onSelect={setSelectedId}
+        />
+      )}
 
       {selected && (
         <AlbumPanel
