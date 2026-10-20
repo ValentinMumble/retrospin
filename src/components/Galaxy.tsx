@@ -122,7 +122,21 @@ export function Galaxy({
         forceCollide<Star>((star) => star.size / 2 + 3),
       )
       .stop()
-    for (let tick = 0; tick < 300; tick += 1) simulation.tick()
+    // Distance from the centre is time: after each step, put every album back on its year's ring (with a little
+    // play so covers can make room). Similarity then only moves albums around the circle, never across years.
+    const play = RING_STEP * 0.4
+    for (let tick = 0; tick < 300; tick += 1) {
+      simulation.tick()
+      for (const star of stars) {
+        const ring = ringRadius(star.album.year, firstYear)
+        const x = star.x ?? 0
+        const y = star.y ?? 0
+        const radius = Math.hypot(x, y) || 1
+        const kept = Math.min(ring + play, Math.max(ring - play, radius))
+        star.x = (x / radius) * kept
+        star.y = (y / radius) * kept
+      }
+    }
     const byId = new Map(stars.map((star) => [star.album.id, star]))
     return { stars, beams, byId }
   }, [albums, links, firstYear])
