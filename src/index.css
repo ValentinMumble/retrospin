@@ -1257,6 +1257,109 @@ kbd {
   }
 }
 
+/* Explore: similar records, and lighting them up on the timeline */
+
+.explore {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.explore h3 {
+  margin: 0 0 10px;
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.light-up {
+  margin-bottom: 4px;
+}
+
+.light-up[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-scene);
+}
+
+.explore-label {
+  margin: 14px 0 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.explore-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.explore-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 6px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+button.explore-item:hover {
+  background: var(--bg-raised);
+}
+
+.explore-item img,
+.explore-item .result-blank {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 3px;
+  object-fit: cover;
+}
+
+.explore-item.is-missing {
+  cursor: default;
+}
+
+.explore-item.is-missing .text-button {
+  flex: none;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.explore-credit {
+  margin: 12px 0 0;
+  font-size: 11.5px;
+  color: var(--faint);
+}
+
+.explore-credit a {
+  color: var(--muted);
+}
+
+.card {
+  transition: opacity 0.35s;
+}
+
+.card.is-dimmed {
+  opacity: 0.12;
+}
+
+.card.is-dimmed:hover {
+  opacity: 0.5;
+}
+
+.minimap-seg.is-dimmed {
+  opacity: 0.12;
+}
+
 /* Touch screens: bigger targets, swipe hint instead of keys */
 
 @media (pointer: coarse) {

@@ -4,6 +4,7 @@ import type { AlbumLikes } from '../likes'
 import { SCENES } from '../scenes'
 import { cssVars } from '../style'
 import type { Album } from '../types'
+import { ExploreSection } from './ExploreSection'
 
 interface AlbumPanelProps {
   album: Album
@@ -15,6 +16,13 @@ interface AlbumPanelProps {
   countryActive: boolean
   onFilterScene: () => void
   onFilterCountry: () => void
+  /** For the Explore section: every album, who is looking, and the light-up state. */
+  allAlbums: Album[]
+  owner: boolean
+  lit: boolean
+  onJump: (id: string) => void
+  onSuggest: (query: string) => void
+  onLight: (ids: ReadonlySet<string> | null) => void
   onPrevious: () => void
   onNext: () => void
   onClose: () => void
@@ -42,6 +50,12 @@ export function AlbumPanel({
   countryActive,
   onFilterScene,
   onFilterCountry,
+  allAlbums,
+  owner,
+  lit,
+  onJump,
+  onSuggest,
+  onLight,
   onPrevious,
   onNext,
   onClose,
@@ -58,7 +72,8 @@ export function AlbumPanel({
     panelRef.current?.scrollTo({ top: 0 })
   }, [album.id])
 
-  // A click outside the panel closes it, except on an album, which opens that album instead.
+  // A click outside the panel closes it, except on an album, which opens that album instead, and in a dialog
+  // opened from the panel (adding an album from Explore).
   // Listening in the bubble phase means a drag on the timeline (whose click is swallowed) never closes it.
   const onCloseRef = useRef(onClose)
   useEffect(() => {
@@ -68,7 +83,7 @@ export function AlbumPanel({
     const onClick = (event: MouseEvent) => {
       const target = event.target
       if (!(target instanceof Element)) return
-      if (panelRef.current?.contains(target) || target.closest('.card')) return
+      if (panelRef.current?.contains(target) || target.closest('.card, .dialog-backdrop')) return
       onCloseRef.current()
     }
     document.addEventListener('click', onClick)
@@ -166,6 +181,16 @@ export function AlbumPanel({
             </a>
           </>
         )}
+        <ExploreSection
+          key={album.id}
+          album={album}
+          allAlbums={allAlbums}
+          owner={owner}
+          lit={lit}
+          onJump={onJump}
+          onSuggest={onSuggest}
+          onLight={onLight}
+        />
         <p className="panel-keys">
           <kbd>←</kbd> <kbd>→</kbd> previous and next album, <kbd>Esc</kbd> to close
         </p>

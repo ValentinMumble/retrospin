@@ -70,6 +70,9 @@ export default function App() {
   const [dialog, setDialog] = useState<'suggest' | 'review' | null>(null)
   /** On phones the scene and country filters fold away behind a Filters button. */
   const [filtersOpen, setFiltersOpen] = useState(false)
+  /** "Light up related" from an album's Explore section: only these albums stay bright. */
+  const [lit, setLit] = useState<{ seedId: string; ids: ReadonlySet<string> } | null>(null)
+  const [suggestQuery, setSuggestQuery] = useState('')
 
   const loadAlbums = useCallback(async () => {
     try {
@@ -168,6 +171,8 @@ export default function App() {
   }, [allAlbums, query, activeScenes, mineOnly, activeCountries, likes])
 
   const selected = allAlbums.find((album) => album.id === selectedId) ?? null
+  // The light-up belongs to the album that turned it on: opening another album or closing the panel ends it.
+  const litIds = lit && lit.seedId === selectedId ? lit.ids : null
   const selectedIndex = albums.findIndex((album) => album.id === selectedId)
   const latest = allAlbums[allAlbums.length - 1]
 
@@ -223,7 +228,8 @@ export default function App() {
       if (!timeline) return
       switch (event.key) {
         case 'Escape':
-          setSelectedId(null)
+          if (litIds) setLit(null)
+          else setSelectedId(null)
           break
         case 'ArrowRight':
           if (selectedId) step(1)
@@ -255,10 +261,20 @@ export default function App() {
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [selectedId, step])
+  }, [selectedId, step, litIds])
 
   const filtered = query.trim() !== '' || activeScenes.size > 0 || mineOnly || activeCountries.size > 0
   const activeFilterCount = activeScenes.size + activeCountries.size + (mineOnly ? 1 : 0)
+  const openSuggest = (search = '') => {
+    setSuggestQuery(search)
+    setDialog('suggest')
+  }
+  /** From Explore: open a related album, clearing filters that would hide it. */
+  const jumpTo = (id: string) => {
+    if (!albums.some((album) => album.id === id)) clearFilters()
+    setSelectedId(id)
+    requestAnimationFrame(() => requestAnimationFrame(() => timelineRef.current?.scrollToAlbum(id)))
+  }
   const clearFilters = () => {
     setQuery('')
     setActiveScenes(new Set())
@@ -309,7 +325,7 @@ export default function App() {
           <button
             type="button"
             className="toggle"
-            onClick={() => setDialog('suggest')}
+            onClick={() => openSuggest()}
             aria-label={owner ? 'Add an album' : 'Suggest an album'}
             title={owner ? 'Add an album' : 'Suggest an album'}
           >
@@ -412,6 +428,7 @@ export default function App() {
         firstYear={years.first}
         lastYear={years.last}
         likes={likes}
+        lit={litIds}
         selectedId={selectedId}
         onSelect={setSelectedId}
         onCenterYearChange={setCenterYear}
@@ -467,7 +484,7 @@ export default function App() {
                 ? 'Missing a record that belongs here? Add it, it goes straight onto the timeline.'
                 : 'Missing a record that belongs here? Suggest it, and it joins the timeline once reviewed.'}
             </p>
-            <button type="button" className="go" onClick={() => setDialog('suggest')}>
+            <button type="button" className="go" onClick={() => openSuggest()}>
               {owner ? 'Add an album' : 'Suggest an album'}
             </button>
           </>
@@ -522,13 +539,27 @@ export default function App() {
             setActiveCountries((current) => only(current, country))
             keepSelectedInView()
           }}
+          allAlbums={allAlbums}
+          owner={owner}
+          lit={litIds !== null}
+          onJump={jumpTo}
+          onSuggest={openSuggest}
+          onLight={(ids) => setLit(ids ? { seedId: selected.id, ids } : null)}
           onPrevious={() => step(-1)}
           onNext={() => step(1)}
           onClose={() => setSelectedId(null)}
         />
       )}
 
-      {dialog === 'suggest' && <SuggestDialog owner={owner} onClose={() => setDialog(null)} onPublished={addAlbum} />}
+      {dialog === 'suggest' && (
+        <SuggestDialog
+          key={suggestQuery}
+          owner={owner}
+          initialQuery={suggestQuery}
+          onClose={() => setDialog(null)}
+          onPublished={addAlbum}
+        />
+      )}
       {dialog === 'review' && (
         <ReviewDialog onClose={() => setDialog(null)} onPublished={addAlbum} onCountChange={setPendingCount} />
       )}

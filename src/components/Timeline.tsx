@@ -29,6 +29,8 @@ export interface TimelineHandle {
 
 interface TimelineProps {
   albums: Album[]
+  /** When set, only these albums stay bright (light up related). */
+  lit: ReadonlySet<string> | null
   firstYear: number
   lastYear: number
   likes: LikesByAlbum | null
@@ -72,12 +74,13 @@ const Eras = memo(function Eras({ layout }: { layout: Layout }) {
 
 interface YearBlocksProps {
   layout: Layout
+  lit: ReadonlySet<string> | null
   likes: LikesByAlbum | null
   selectedId: string | null
   onSelect: (id: string) => void
 }
 
-const YearBlocks = memo(function YearBlocks({ layout, likes, selectedId, onSelect }: YearBlocksProps) {
+const YearBlocks = memo(function YearBlocks({ layout, lit, likes, selectedId, onSelect }: YearBlocksProps) {
   return (
     <div className="years">
       {layout.blocks.map((block, index) => {
@@ -101,6 +104,7 @@ const YearBlocks = memo(function YearBlocks({ layout, likes, selectedId, onSelec
                     album={album}
                     likes={likes?.get(album.id)}
                     selected={album.id === selectedId}
+                    dimmed={lit !== null && !lit.has(album.id)}
                     onSelect={onSelect}
                   />
                 ))}
@@ -120,6 +124,7 @@ const YearBlocks = memo(function YearBlocks({ layout, likes, selectedId, onSelec
 
 export function Timeline({
   albums,
+  lit,
   firstYear,
   lastYear,
   likes,
@@ -301,13 +306,20 @@ export function Timeline({
             {intro}
             {albums.length === 0 && <div className="empty">{empty}</div>}
           </div>
-          <YearBlocks layout={layout} likes={likes} selectedId={selectedId} onSelect={onSelect} />
+          <YearBlocks layout={layout} lit={lit} likes={likes} selectedId={selectedId} onSelect={onSelect} />
           <div className="outro" style={{ width: layout.outroWidth }}>
             {outro}
           </div>
         </div>
       </div>
-      <MiniMap layout={layout} likes={likes} scrollLeft={scrollLeft} viewportWidth={viewport.width} onSeek={seek} />
+      <MiniMap
+        layout={layout}
+        lit={lit}
+        likes={likes}
+        scrollLeft={scrollLeft}
+        viewportWidth={viewport.width}
+        onSeek={seek}
+      />
     </div>
   )
 }

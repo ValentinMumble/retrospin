@@ -5,6 +5,7 @@ import { SCENES } from '../scenes'
 
 interface MiniMapProps {
   layout: Layout
+  lit: ReadonlySet<string> | null
   likes: LikesByAlbum | null
   scrollLeft: number
   viewportWidth: number
@@ -12,7 +13,7 @@ interface MiniMapProps {
   onSeek: (fraction: number) => void
 }
 
-export function MiniMap({ layout, likes, scrollLeft, viewportWidth, onSeek }: MiniMapProps) {
+export function MiniMap({ layout, lit, likes, scrollLeft, viewportWidth, onSeek }: MiniMapProps) {
   const mapRef = useRef<HTMLDivElement>(null)
   const dragging = useRef(false)
   const percent = (value: number) => `${(value / layout.total) * 100}%`
@@ -54,7 +55,7 @@ export function MiniMap({ layout, likes, scrollLeft, viewportWidth, onSeek }: Mi
               {block.albums.map((album) => (
                 <span
                   key={album.id}
-                  className={`minimap-seg${!likes || likes.has(album.id) ? ' is-mine' : ''}`}
+                  className={`minimap-seg${!likes || likes.has(album.id) ? ' is-mine' : ''}${lit && !lit.has(album.id) ? ' is-dimmed' : ''}`}
                   style={{ background: SCENES[album.scene].color }}
                 />
               ))}

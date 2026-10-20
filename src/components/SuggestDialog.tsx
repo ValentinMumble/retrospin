@@ -8,6 +8,8 @@ import { Dialog } from './Dialog'
 interface SuggestDialogProps {
   /** The site owner's suggestions go straight onto the timeline. */
   owner: boolean
+  /** Search to start with, e.g. an album picked from the Explore section. */
+  initialQuery?: string
   onClose: () => void
   onPublished: (album: Album) => void
 }
@@ -15,8 +17,8 @@ interface SuggestDialogProps {
 const STATUS_LABELS = { published: 'On the timeline', pending: 'Waiting for review' }
 const MAX_YEAR = new Date().getFullYear() + 1
 
-export function SuggestDialog({ owner, onClose, onPublished }: SuggestDialogProps) {
-  const [query, setQuery] = useState('')
+export function SuggestDialog({ owner, initialQuery = '', onClose, onPublished }: SuggestDialogProps) {
+  const [query, setQuery] = useState(initialQuery)
   const [results, setResults] = useState<SearchResult[]>([])
   const [searching, setSearching] = useState(false)
   const [error, setError] = useState<string | null>(null)

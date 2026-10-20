@@ -1,6 +1,7 @@
 import { currentAccessToken } from './spotify'
 import type { Album, SceneKey } from './types'
 
+// Query values use encodeURIComponent (spaces as %20): a "+" for a space does not survive every proxy.
 async function request<T>(path: string, init: RequestInit = {}, withLogin = false): Promise<T> {
   const headers = new Headers(init.headers)
   if (init.body) headers.set('Content-Type', 'application/json')
@@ -32,7 +33,7 @@ export interface SearchResult {
 }
 
 export async function searchAlbums(query: string) {
-  return (await request<{ results: SearchResult[] }>(`/api/search?${new URLSearchParams({ q: query })}`)).results
+  return (await request<{ results: SearchResult[] }>(`/api/search?q=${encodeURIComponent(query)}`)).results
 }
 
 export function suggestAlbum(input: { spotifyId: string; note: string; year: number | null }) {
@@ -63,4 +64,23 @@ export function reviewSuggestion(input: {
     { method: 'POST', body: JSON.stringify(input) },
     true,
   )
+}
+
+export interface SimilarArtist {
+  name: string
+  match: number
+}
+
+export async function fetchSimilarArtists(artist: string) {
+  return (await request<{ artists: SimilarArtist[] }>(`/api/similar?artist=${encodeURIComponent(artist)}`)).artists
+}
+
+export interface TopAlbum {
+  artist: string
+  title: string
+  image: string | null
+}
+
+export async function fetchTopAlbum(artist: string) {
+  return (await request<{ album: TopAlbum | null }>(`/api/top-album?artist=${encodeURIComponent(artist)}`)).album
 }

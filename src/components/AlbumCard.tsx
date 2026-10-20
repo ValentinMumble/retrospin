@@ -8,6 +8,7 @@ interface AlbumCardProps {
   album: Album
   likes: AlbumLikes | undefined
   selected: boolean
+  dimmed: boolean
   onSelect: (id: string) => void
 }
 
@@ -17,12 +18,12 @@ function heartTitle(album: Album, likes: AlbumLikes) {
   return `You like ${likes.artistLikes} ${likes.artistLikes === 1 ? 'song' : 'songs'} by ${album.artist}`
 }
 
-export const AlbumCard = memo(function AlbumCard({ album, likes, selected, onSelect }: AlbumCardProps) {
+export const AlbumCard = memo(function AlbumCard({ album, likes, selected, dimmed, onSelect }: AlbumCardProps) {
   const cover = album.spotify?.coverSmall
   return (
     <button
       type="button"
-      className={`card${selected ? ' is-selected' : ''}`}
+      className={`card${selected ? ' is-selected' : ''}${dimmed ? ' is-dimmed' : ''}`}
       data-album={album.id}
       style={cssVars({ '--scene': SCENES[album.scene].color })}
       onClick={() => onSelect(album.id)}
