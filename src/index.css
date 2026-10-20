@@ -1117,9 +1117,23 @@ kbd {
   background: #000;
 }
 
+.spotify-links {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 12px 0 0;
+}
+
+.spotify-web {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.spotify-web:hover {
+  color: var(--ink);
+}
+
 .spotify-link {
-  display: inline-block;
-  margin-top: 12px;
   font-size: 14px;
   font-weight: 600;
   color: #1ed760;

@@ -28,6 +28,12 @@ interface AlbumPanelProps {
   onClose: () => void
 }
 
+/**
+ * Phones and tablets open open.spotify.com links in the Spotify app by themselves. Computers open them in the
+ * web player, so there the main link uses the spotify: address, which the desktop app answers.
+ */
+const TOUCH_DEVICE = window.matchMedia('(pointer: coarse)').matches
+
 function formatDate(date: string) {
   if (date.length !== 10) return date
   return new Date(`${date}T12:00:00`).toLocaleDateString('en-GB', {
@@ -178,9 +184,22 @@ export function AlbumPanel({
               loading="lazy"
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
             />
-            <a className="spotify-link" href={album.spotify.url} target="_blank" rel="noreferrer">
-              Open in Spotify
-            </a>
+            {TOUCH_DEVICE ? (
+              <p className="spotify-links">
+                <a className="spotify-link" href={album.spotify.url} target="_blank" rel="noreferrer">
+                  Open in Spotify
+                </a>
+              </p>
+            ) : (
+              <p className="spotify-links">
+                <a className="spotify-link" href={`spotify:album:${album.spotify.id}`}>
+                  Open in Spotify app
+                </a>
+                <a className="spotify-web" href={album.spotify.url} target="_blank" rel="noreferrer">
+                  web player
+                </a>
+              </p>
+            )}
           </>
         )}
         <ExploreSection
