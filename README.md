@@ -10,6 +10,12 @@ your liked songs. The Galaxy view links similar records, and the Genres view ran
 (or the most liked ones) and explores one: its records, the genres around it, and its popular albums that are not on
 the timeline yet.
 
+![The timeline around 1979](docs/screenshots/timeline.webp)
+
+| An album | The galaxy | A genre |
+| --- | --- | --- |
+| ![NEU!'s first album, with its note, genres and Spotify player](docs/screenshots/album.webp) | ![Every record on rings by year, similar records close together](docs/screenshots/galaxy.webp) | ![The krautrock page of the Genres view](docs/screenshots/genres.webp) |
+
 ## How it works
 
 - The albums live in a Redis store (Upstash, connected to the Vercel project). The page loads them from
