@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { countryName, flag } from '../countries'
+import { albumGenres, genreLabel } from '../genres'
 import type { AlbumLikes } from '../likes'
 import { SCENES } from '../scenes'
 import { cssVars } from '../style'
@@ -20,6 +21,7 @@ interface AlbumPanelProps {
   allAlbums: Album[]
   owner: boolean
   lit: boolean
+  onGenre: (genre: string) => void
   onJump: (id: string) => void
   onSuggest: (query: string) => void
   onLight: (ids: ReadonlySet<string> | null) => void
@@ -59,6 +61,7 @@ export function AlbumPanel({
   allAlbums,
   owner,
   lit,
+  onGenre,
   onJump,
   onSuggest,
   onLight,
@@ -69,6 +72,7 @@ export function AlbumPanel({
   const closeRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLElement>(null)
   const scene = SCENES[album.scene]
+  const genres = albumGenres(album)
 
   useEffect(() => {
     // Opened from the search box (Enter steps through matches): leave the focus there.
@@ -91,7 +95,9 @@ export function AlbumPanel({
     const onClick = (event: MouseEvent) => {
       const target = event.target
       if (!(target instanceof Element)) return
-      if (panelRef.current?.contains(target) || target.closest('.card, .galaxy-star, .dialog-backdrop')) return
+      if (panelRef.current?.contains(target) || target.closest('.card, .galaxy-star, .genre-album, .dialog-backdrop')) {
+        return
+      }
       onCloseRef.current()
     }
     document.addEventListener('click', onClick)
@@ -156,6 +162,21 @@ export function AlbumPanel({
         <h2 id="panel-title">{album.title}</h2>
         <p className="panel-artist">{album.artist}</p>
         <p className="panel-note">{album.note}</p>
+        {genres.length > 0 && (
+          <div className="panel-genres" role="group" aria-label="Genres">
+            {genres.map((name) => (
+              <button
+                key={name}
+                type="button"
+                className="genre-tag"
+                title={`Explore ${genreLabel(name)}`}
+                onClick={() => onGenre(name)}
+              >
+                {genreLabel(name)}
+              </button>
+            ))}
+          </div>
+        )}
 
         {likes && (
           <div className="panel-liked">

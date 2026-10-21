@@ -77,15 +77,30 @@ async function topTags(params: Record<string, string>) {
   }
 }
 
-/** Picks the scene whose tags weigh the most, album tags counting double the artist's. */
-export async function detectScene(artist: string, album: string, year: number): Promise<SceneKey> {
+interface Tag {
+  name: string
+  weight: number
+}
+
+export interface LastfmTags {
+  album: Tag[]
+  artist: Tag[]
+}
+
+/** The album's and its artist's top tags on Last.fm. */
+export async function fetchTags(artist: string, album: string): Promise<LastfmTags> {
   const [albumTags, artistTags] = await Promise.all([
     topTags({ method: 'album.gettoptags', artist, album }),
     topTags({ method: 'artist.gettoptags', artist }),
   ])
+  return { album: albumTags.slice(0, 15), artist: artistTags.slice(0, 15) }
+}
+
+/** Picks the scene whose tags weigh the most, album tags counting double the artist's. */
+export function detectScene(tags: LastfmTags, year: number): SceneKey {
   const scores = new Map<SceneKey, number>()
-  const add = (tags: { name: string; weight: number }[], factor: number) => {
-    for (const tag of tags.slice(0, 15)) {
+  const add = (list: Tag[], factor: number) => {
+    for (const tag of list) {
       const scene = sceneOfTag(tag.name, year)
       if (scene) {
         const points = Math.max(tag.weight, 1) * factor * (SCENE_WEIGHT[scene] ?? 1)
@@ -93,8 +108,24 @@ export async function detectScene(artist: string, album: string, year: number): 
       }
     }
   }
-  add(albumTags, 2)
-  add(artistTags, 1)
+  add(tags.album, 2)
+  add(tags.artist, 1)
   const best = [...scores.entries()].sort((first, second) => second[1] - first[1])[0]
   return best?.[0] ?? sceneOfYear(year)
+}
+
+/** Album and artist tags in one list for the genre explorer, the same mix as scripts/build_tags.py. */
+export function mergeTags(tags: LastfmTags): [string, number][] {
+  const weights = new Map<string, number>()
+  const add = (list: Tag[], factor: number) => {
+    for (const tag of list) {
+      const name = tag.name.trim().toLowerCase()
+      if (name) weights.set(name, (weights.get(name) ?? 0) + Math.max(tag.weight, 1) * factor)
+    }
+  }
+  add(tags.album, 2)
+  add(tags.artist, 1)
+  return [...weights.entries()]
+    .sort((first, second) => second[1] - first[1] || first[0].localeCompare(second[0]))
+    .slice(0, 12)
 }

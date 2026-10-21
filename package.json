@@ -11,7 +11,7 @@
     "lint": "oxlint",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"api/**/*.ts\" index.html",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"api/**/*.ts\" index.html",
-    "data": "python3 scripts/build_data.py && python3 scripts/seed_redis.py"
+    "data": "python3 scripts/build_data.py && python3 scripts/seed_redis.py && python3 scripts/build_tags.py"
   },
   "dependencies": {
     "@upstash/redis": "1.39.0",

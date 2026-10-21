@@ -25,6 +25,8 @@ export interface Album {
   scene: SceneKey
   /** Two-letter country code of the album's first artist, from MusicBrainz. */
   country: string | null
+  /** Last.fm tags of the album and its artist (album tags count double), as [tag, weight] pairs, heaviest first. */
+  tags?: [string, number][]
   note: string
   spotify: {
     id: string

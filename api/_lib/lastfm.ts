@@ -1,4 +1,5 @@
 import { env, HttpError } from './http.js'
+import { tidy } from './names.js'
 
 /** Album names that are not studio albums: best-ofs, live records, reissue bundles. */
 export const NOT_AN_ALBUM =
@@ -39,13 +40,64 @@ export interface TopAlbum {
   image: string | null
 }
 
+interface LastfmAlbum {
+  name: string
+  artist: { name: string }
+  image?: { '#text': string; size: string }[]
+}
+
+function toTopAlbum(album: LastfmAlbum): TopAlbum {
+  const image = [...(album.image ?? [])].reverse().find((item) => item['#text'])?.['#text'] ?? ''
+  // "Ege Bamyasi (Remastered Version)" reads "Ege Bamyasi".
+  const title = tidy(album.name) || album.name
+  return { artist: album.artist.name, title, image: image && !image.includes(PLACEHOLDER) ? image : null }
+}
+
 /** The artist's most played studio album on Last.fm. */
 export async function topAlbum(artist: string): Promise<TopAlbum | null> {
-  const answer = await lastfm<{
-    topalbums?: { album?: { name: string; artist: { name: string }; image?: { '#text': string; size: string }[] }[] }
-  }>({ method: 'artist.gettopalbums', artist, limit: '10' })
+  const answer = await lastfm<{ topalbums?: { album?: LastfmAlbum[] } }>({
+    method: 'artist.gettopalbums',
+    artist,
+    limit: '10',
+  })
   const album = (answer.topalbums?.album ?? []).find((item) => item.name && !NOT_AN_ALBUM.test(item.name))
-  if (!album) return null
-  const image = [...(album.image ?? [])].reverse().find((item) => item['#text'])?.['#text'] ?? ''
-  return { artist: album.artist.name, title: album.name, image: image && !image.includes(PLACEHOLDER) ? image : null }
+  return album ? toTopAlbum(album) : null
+}
+
+export interface Genre {
+  /** The opening of the tag's Last.fm wiki page, as plain text. */
+  summary: string | null
+  albums: TopAlbum[]
+}
+
+/** Turns a Last.fm wiki summary (HTML ending in a "Read more" link) into a few plain sentences. */
+function plainSummary(html: string | undefined) {
+  if (!html) return null
+  const entities: Record<string, string> = { amp: '&', quot: '"', apos: "'", lt: '<', gt: '>', nbsp: ' ' }
+  const text = html
+    .replace(/<a [^>]*>Read more on Last\.fm<\/a>\.?/i, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&(#\d+|\w+);/g, (entity, name: string) =>
+      name.startsWith('#') ? String.fromCharCode(Number(name.slice(1))) : (entities[name] ?? entity),
+    )
+    .replace(/\s+/g, ' ')
+    .trim()
+  if (text.length < 20) return null
+  const sentences = text.match(/[^.!?]+[.!?]+(\s|$)/g) ?? [text]
+  let summary = ''
+  for (const sentence of sentences) {
+    if (summary && summary.length + sentence.length > 360) break
+    summary += sentence
+  }
+  return summary.trim()
+}
+
+/** A tag's most played studio albums on Last.fm, and the start of its wiki page. */
+export async function genre(tag: string): Promise<Genre> {
+  const [top, info] = await Promise.all([
+    lastfm<{ albums?: { album?: LastfmAlbum[] } }>({ method: 'tag.gettopalbums', tag, limit: '80' }),
+    lastfm<{ tag?: { wiki?: { summary?: string } } }>({ method: 'tag.getinfo', tag }),
+  ])
+  const albums = (top.albums?.album ?? []).filter((item) => item.name && !NOT_AN_ALBUM.test(item.name))
+  return { summary: plainSummary(info.tag?.wiki?.summary), albums: albums.map(toTopAlbum) }
 }

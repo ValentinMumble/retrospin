@@ -2,7 +2,7 @@ import type { Album } from '../../src/types'
 import { similarArtists } from './lastfm.js'
 import { artistCountry } from './musicbrainz.js'
 import { normalize, slug, tidy } from './names.js'
-import { detectScene } from './scene.js'
+import { detectScene, fetchTags, mergeTags } from './scene.js'
 import { albumDetails } from './spotify.js'
 import { ALBUMS, PENDING, redis, SIMILAR, SPOTIFY_IDS } from './store.js'
 
@@ -13,8 +13,8 @@ export async function buildAlbum(spotifyId: string, options: { note: string; yea
   const artist = details.artists.join(' & ')
   const releaseYear = Number(details.release.slice(0, 4))
   const year = options.year ?? releaseYear
-  const [scene, country] = await Promise.all([
-    detectScene(details.artists[0], title, year),
+  const [tags, country] = await Promise.all([
+    fetchTags(details.artists[0], title),
     artistCountry(details.artistIds[0], details.artists[0], normalize),
   ])
   return {
@@ -23,8 +23,9 @@ export async function buildAlbum(spotifyId: string, options: { note: string; yea
     date: year === releaseYear && details.precision === 'day' ? details.release : String(year),
     artist,
     title,
-    scene,
+    scene: detectScene(tags, year),
     country,
+    tags: mergeTags(tags),
     note: options.note,
     spotify: {
       id: details.id,

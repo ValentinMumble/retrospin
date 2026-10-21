@@ -85,6 +85,15 @@ export async function fetchTopAlbum(artist: string) {
   return (await request<{ album: TopAlbum | null }>(`/api/top-album?artist=${encodeURIComponent(artist)}`)).album
 }
 
+export interface GenreDetails {
+  summary: string | null
+  albums: TopAlbum[]
+}
+
+export function fetchGenre(tag: string) {
+  return request<GenreDetails>(`/api/genre?tag=${encodeURIComponent(tag)}`)
+}
+
 /** [album id, album id, strength 0-1, kind] */
 export type GalaxyLink = [string, string, number, 'similar' | 'artist']
 

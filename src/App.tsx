@@ -5,8 +5,10 @@ import { ReviewDialog } from './components/ReviewDialog'
 import { SuggestDialog } from './components/SuggestDialog'
 import { ThemePicker } from './components/ThemePicker'
 import { Galaxy } from './components/Galaxy'
+import { GenresView } from './components/GenresView'
 import { Timeline, type TimelineHandle } from './components/Timeline'
 import { countryName, flag } from './countries'
+import { genreLabel } from './genres'
 import { matchLikes } from './likes'
 import { SCENES, SCENE_ORDER } from './scenes'
 import {
@@ -44,6 +46,25 @@ function toggled<T>(set: ReadonlySet<T>, value: T): ReadonlySet<T> {
   return next
 }
 
+type View = 'timeline' | 'galaxy' | 'genres'
+
+function readStored(key: string) {
+  try {
+    return localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+function writeStored(key: string, value: string | null) {
+  try {
+    if (value === null) localStorage.removeItem(key)
+    else localStorage.setItem(key, value)
+  } catch {
+    // Storage blocked: the choice just won't be remembered.
+  }
+}
+
 function sortAlbums(albums: Album[]) {
   return [...albums].sort(
     (first, second) => first.date.localeCompare(second.date) || first.artist.localeCompare(second.artist),
@@ -71,26 +92,33 @@ export default function App() {
   const [dialog, setDialog] = useState<'suggest' | 'review' | null>(null)
   /** On phones the scene and country filters fold away behind a Filters button. */
   const [filtersOpen, setFiltersOpen] = useState(false)
-  /** "Light up related" from an album's Explore section: only these albums stay bright. */
-  const [lit, setLit] = useState<{ seedId: string; ids: ReadonlySet<string> } | null>(null)
+  /**
+   * Only these albums stay bright. "Light up related" in an album's Explore section belongs to that album
+   * (seedId); a genre's light-up (genre) stays on while other albums open, until turned off.
+   */
+  const [lit, setLit] = useState<{ seedId: string | null; genre: string | null; ids: ReadonlySet<string> } | null>(null)
   const [suggestQuery, setSuggestQuery] = useState('')
-  const [view, setView] = useState<'timeline' | 'galaxy'>(() => {
-    try {
-      return localStorage.getItem('retrospin.view') === 'galaxy' ? 'galaxy' : 'timeline'
-    } catch {
-      return 'timeline'
-    }
+  const [view, setView] = useState<View>(() => {
+    const stored = readStored('retrospin.view')
+    return stored === 'galaxy' || stored === 'genres' ? stored : 'timeline'
   })
+  const [genre, setGenre] = useState<string | null>(() => readStored('retrospin.genre'))
   const [galaxyLinks, setGalaxyLinks] = useState<GalaxyLink[] | null>(null)
   const [galaxyError, setGalaxyError] = useState<string | null>(null)
 
-  const changeView = (next: 'timeline' | 'galaxy') => {
+  const changeView = (next: View) => {
     setView(next)
-    try {
-      localStorage.setItem('retrospin.view', next)
-    } catch {
-      // Storage blocked: the view just won't be remembered.
-    }
+    writeStored('retrospin.view', next)
+  }
+  const changeGenre = (next: string | null) => {
+    setGenre(next)
+    writeStored('retrospin.genre', next)
+  }
+  /** From a genre tag in the album panel: show that genre in the Genres view. */
+  const openGenre = (next: string) => {
+    changeGenre(next)
+    changeView('genres')
+    setSelectedId(null)
   }
 
   // The galaxy's links load the first time it is shown.
@@ -201,8 +229,9 @@ export default function App() {
   }, [allAlbums, activeScenes, mineOnly, activeCountries, likes])
 
   const selected = allAlbums.find((album) => album.id === selectedId) ?? null
-  // The light-up belongs to the album that turned it on: opening another album or closing the panel ends it.
-  const litIds = lit && lit.seedId === selectedId ? lit.ids : null
+  // An album's light-up belongs to it: opening another album or closing the panel ends it.
+  const litIds = lit && (lit.seedId === null || lit.seedId === selectedId) ? lit.ids : null
+  const litGenre = lit?.genre ?? null
   // Search highlights instead of hiding: matching albums stay bright, the others dim.
   const needle = fold(query.trim())
   const matchList = useMemo(
@@ -289,8 +318,10 @@ export default function App() {
       if (!timeline) return
       switch (event.key) {
         case 'Escape':
-          if (litIds) setLit(null)
-          else setSelectedId(null)
+          // An album's light-up goes first, then the album, then a genre's light-up.
+          if (litIds && !litGenre) setLit(null)
+          else if (selectedId) setSelectedId(null)
+          else setLit(null)
           break
         case 'ArrowRight':
           if (selectedId) step(1)
@@ -322,13 +353,24 @@ export default function App() {
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [selectedId, step, litIds])
+  }, [selectedId, step, litIds, litGenre])
 
   const filtered = activeScenes.size > 0 || mineOnly || activeCountries.size > 0
   const activeFilterCount = activeScenes.size + activeCountries.size + (mineOnly ? 1 : 0)
   const openSuggest = (search = '') => {
     setSuggestQuery(search)
     setDialog('suggest')
+  }
+  /** From the Genres view: light the genre's albums up on the timeline and travel to the first one. */
+  const lightGenre = (name: string, ids: ReadonlySet<string> | null) => {
+    if (!ids) {
+      setLit(null)
+      return
+    }
+    setLit({ seedId: null, genre: name, ids })
+    changeView('timeline')
+    const first = albums.find((album) => ids.has(album.id))
+    if (first) requestAnimationFrame(() => requestAnimationFrame(() => timelineRef.current?.scrollToAlbum(first.id)))
   }
   /** From Explore: open a related album, clearing filters that would hide it. */
   const jumpTo = (id: string) => {
@@ -351,7 +393,7 @@ export default function App() {
           <span className="brand-disc" aria-hidden="true" />
           Retrospin
         </button>
-        <nav className="decades" aria-label="Jump to a decade" hidden={view === 'galaxy'}>
+        <nav className="decades" aria-label="Jump to a decade" hidden={view !== 'timeline'}>
           {DECADES.map((decade) => (
             <button
               key={decade}
@@ -406,6 +448,16 @@ export default function App() {
             >
               <span aria-hidden="true">✦</span>
               <span className="wide-label"> Galaxy</span>
+            </button>
+            <button
+              type="button"
+              aria-pressed={view === 'genres'}
+              aria-label="Genres"
+              title="Genres"
+              onClick={() => changeView('genres')}
+            >
+              <span aria-hidden="true">≡</span>
+              <span className="wide-label"> Genres</span>
             </button>
           </div>
         </div>
@@ -512,9 +564,20 @@ export default function App() {
         ))}
       </div>
 
+      {litGenre && (
+        <p className="lit-bar">
+          <span>
+            Lighting up the {lit?.ids.size} <strong>{genreLabel(litGenre)}</strong> records
+          </span>
+          <button type="button" className="text-button" onClick={() => setLit(null)}>
+            Turn the lights back on
+          </button>
+        </p>
+      )}
+
       <Timeline
         ref={timelineRef}
-        hidden={view === 'galaxy'}
+        hidden={view !== 'timeline'}
         albums={albums}
         firstYear={years.first}
         lastYear={years.last}
@@ -625,6 +688,22 @@ export default function App() {
         />
       )}
 
+      {view === 'genres' && (
+        <GenresView
+          albums={albums}
+          allAlbums={allAlbums}
+          likes={likes}
+          genre={genre}
+          owner={owner}
+          litGenre={litGenre}
+          selectedId={selectedId}
+          onGenre={changeGenre}
+          onOpen={setSelectedId}
+          onLight={lightGenre}
+          onSuggest={openSuggest}
+        />
+      )}
+
       {selected && (
         <AlbumPanel
           album={selected}
@@ -647,10 +726,11 @@ export default function App() {
           }}
           allAlbums={allAlbums}
           owner={owner}
-          lit={litIds !== null}
+          lit={lit?.seedId === selected.id}
+          onGenre={openGenre}
           onJump={jumpTo}
           onSuggest={openSuggest}
-          onLight={(ids) => setLit(ids ? { seedId: selected.id, ids } : null)}
+          onLight={(ids) => setLit(ids ? { seedId: selected.id, genre: null, ids } : null)}
           onPrevious={() => step(-1)}
           onNext={() => step(1)}
           onClose={() => setSelectedId(null)}
