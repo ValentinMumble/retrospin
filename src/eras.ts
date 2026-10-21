@@ -1,12 +1,12 @@
-import type { SceneKey } from './types'
+import type {SceneKey} from './types';
 
 export interface Era {
-  label: string
-  start: number
-  end: number
-  lane: 0 | 1
-  scene: SceneKey
-  blurb: string
+  label: string;
+  start: number;
+  end: number;
+  lane: 0 | 1;
+  scene: SceneKey;
+  blurb: string;
 }
 
 /** Lane 0 is the main story, lane 1 the side currents that overlap it. */
@@ -67,7 +67,7 @@ export const ERAS: Era[] = [
     scene: 'alt',
     blurb: 'Indie labels and college radio build the underground.',
   },
-  { label: 'Grunge', start: 1991, end: 1994, lane: 0, scene: 'alt', blurb: 'Seattle goes global.' },
+  {label: 'Grunge', start: 1991, end: 1994, lane: 0, scene: 'alt', blurb: 'Seattle goes global.'},
   {
     label: 'Britpop',
     start: 1995,
@@ -156,4 +156,4 @@ export const ERAS: Era[] = [
     scene: 'psych',
     blurb: 'Tame Impala and friends rediscover the phaser pedal.',
   },
-]
+];

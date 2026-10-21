@@ -1,31 +1,31 @@
-import { memo } from 'react'
-import type { AlbumLikes } from '../likes'
-import { SCENES } from '../scenes'
-import { cssVars } from '../style'
-import type { Album } from '../types'
+import {memo} from 'react';
+import type {AlbumLikes} from '../likes';
+import {SCENES} from '../scenes';
+import {cssVars} from '../style';
+import type {Album} from '../types';
 
 interface AlbumCardProps {
-  album: Album
-  likes: AlbumLikes | undefined
-  selected: boolean
-  dimmed: boolean
-  onSelect: (id: string) => void
+  album: Album;
+  likes: AlbumLikes | undefined;
+  selected: boolean;
+  dimmed: boolean;
+  onSelect: (id: string) => void;
 }
 
 function heartTitle(album: Album, likes: AlbumLikes) {
-  const songs = likes.songs.length
-  if (songs > 0) return `${songs} of your liked ${songs === 1 ? 'song is' : 'songs are'} on this album`
-  return `You like ${likes.artistLikes} ${likes.artistLikes === 1 ? 'song' : 'songs'} by ${album.artist}`
+  const songs = likes.songs.length;
+  if (songs > 0) return `${songs} of your liked ${songs === 1 ? 'song is' : 'songs are'} on this album`;
+  return `You like ${likes.artistLikes} ${likes.artistLikes === 1 ? 'song' : 'songs'} by ${album.artist}`;
 }
 
-export const AlbumCard = memo(function AlbumCard({ album, likes, selected, dimmed, onSelect }: AlbumCardProps) {
-  const cover = album.spotify?.coverSmall
+export const AlbumCard = memo(function AlbumCard({album, likes, selected, dimmed, onSelect}: AlbumCardProps) {
+  const cover = album.spotify?.coverSmall;
   return (
     <button
       type="button"
       className={`card${selected ? ' is-selected' : ''}${dimmed ? ' is-dimmed' : ''}`}
       data-album={album.id}
-      style={cssVars({ '--scene': SCENES[album.scene].color })}
+      style={cssVars({'--scene': SCENES[album.scene].color})}
       onClick={() => onSelect(album.id)}
       aria-label={`${album.title} by ${album.artist}, ${album.year}`}
     >
@@ -47,5 +47,5 @@ export const AlbumCard = memo(function AlbumCard({ album, likes, selected, dimme
       <span className="card-title">{album.title}</span>
       <span className="card-artist">{album.artist}</span>
     </button>
-  )
-})
+  );
+});

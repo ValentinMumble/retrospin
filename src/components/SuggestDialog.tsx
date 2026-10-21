@@ -1,96 +1,96 @@
-import { useEffect, useRef, useState } from 'react'
-import { searchAlbums, suggestAlbum, type SearchResult } from '../api'
-import { countryName, flag } from '../countries'
-import { SCENES } from '../scenes'
-import type { Album } from '../types'
-import { Dialog } from './Dialog'
+import {useEffect, useRef, useState} from 'react';
+import {searchAlbums, suggestAlbum, type SearchResult} from '../api';
+import {countryName, flag} from '../countries';
+import {SCENES} from '../scenes';
+import type {Album} from '../types';
+import {Dialog} from './Dialog';
 
 interface SuggestDialogProps {
   /** The site owner's suggestions go straight onto the timeline. */
-  owner: boolean
+  owner: boolean;
   /** Search to start with, e.g. an album picked from the Explore section. */
-  initialQuery?: string
-  onClose: () => void
-  onPublished: (album: Album) => void
+  initialQuery?: string;
+  onClose: () => void;
+  onPublished: (album: Album) => void;
 }
 
-const STATUS_LABELS = { published: 'On the timeline', pending: 'Waiting for review' }
-const MAX_YEAR = new Date().getFullYear() + 1
+const STATUS_LABELS = {published: 'On the timeline', pending: 'Waiting for review'};
+const MAX_YEAR = new Date().getFullYear() + 1;
 
-export function SuggestDialog({ owner, initialQuery = '', onClose, onPublished }: SuggestDialogProps) {
-  const [query, setQuery] = useState(initialQuery)
-  const [results, setResults] = useState<SearchResult[]>([])
-  const [searching, setSearching] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [picked, setPicked] = useState<SearchResult | null>(null)
-  const [year, setYear] = useState('')
-  const [note, setNote] = useState('')
-  const [sending, setSending] = useState(false)
-  const [done, setDone] = useState<{ status: 'published' | 'pending'; album: Album } | null>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const title = owner ? 'Add an album' : 'Suggest an album'
-
-  useEffect(() => {
-    inputRef.current?.focus()
-  }, [picked, done])
+export function SuggestDialog({owner, initialQuery = '', onClose, onPublished}: SuggestDialogProps) {
+  const [query, setQuery] = useState(initialQuery);
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [picked, setPicked] = useState<SearchResult | null>(null);
+  const [year, setYear] = useState('');
+  const [note, setNote] = useState('');
+  const [sending, setSending] = useState(false);
+  const [done, setDone] = useState<{status: 'published' | 'pending'; album: Album} | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const title = owner ? 'Add an album' : 'Suggest an album';
 
   useEffect(() => {
-    const text = query.trim()
-    if (picked || text.length < 2) return
-    let cancelled = false
+    inputRef.current?.focus();
+  }, [picked, done]);
+
+  useEffect(() => {
+    const text = query.trim();
+    if (picked || text.length < 2) return;
+    let cancelled = false;
     const timer = window.setTimeout(async () => {
-      setSearching(true)
+      setSearching(true);
       try {
-        const found = await searchAlbums(text)
+        const found = await searchAlbums(text);
         if (!cancelled) {
-          setResults(found)
-          setError(null)
+          setResults(found);
+          setError(null);
         }
       } catch (problem) {
-        if (!cancelled) setError(problem instanceof Error ? problem.message : String(problem))
+        if (!cancelled) setError(problem instanceof Error ? problem.message : String(problem));
       } finally {
-        if (!cancelled) setSearching(false)
+        if (!cancelled) setSearching(false);
       }
-    }, 350)
+    }, 350);
     return () => {
-      cancelled = true
-      window.clearTimeout(timer)
-    }
-  }, [query, picked])
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [query, picked]);
 
-  const shown = picked || query.trim().length < 2 ? [] : results
+  const shown = picked || query.trim().length < 2 ? [] : results;
 
   const pick = (result: SearchResult) => {
-    setPicked(result)
-    setYear(result.year ? String(result.year) : '')
-    setNote('')
-    setError(null)
-  }
+    setPicked(result);
+    setYear(result.year ? String(result.year) : '');
+    setNote('');
+    setError(null);
+  };
 
   const send = async () => {
-    if (!picked) return
-    setSending(true)
-    setError(null)
+    if (!picked) return;
+    setSending(true);
+    setError(null);
     try {
-      const answer = await suggestAlbum({ spotifyId: picked.spotifyId, note, year: year ? Number(year) : null })
-      setDone(answer)
-      if (answer.status === 'published') onPublished(answer.album)
+      const answer = await suggestAlbum({spotifyId: picked.spotifyId, note, year: year ? Number(year) : null});
+      setDone(answer);
+      if (answer.status === 'published') onPublished(answer.album);
     } catch (problem) {
-      setError(problem instanceof Error ? problem.message : String(problem))
+      setError(problem instanceof Error ? problem.message : String(problem));
     } finally {
-      setSending(false)
+      setSending(false);
     }
-  }
+  };
 
   const startOver = () => {
-    setDone(null)
-    setPicked(null)
-    setQuery('')
-    setResults([])
-  }
+    setDone(null);
+    setPicked(null);
+    setQuery('');
+    setResults([]);
+  };
 
   if (done) {
-    const { album } = done
+    const {album} = done;
     return (
       <Dialog title={title} onClose={onClose}>
         <div className="suggest-done">
@@ -116,7 +116,7 @@ export function SuggestDialog({ owner, initialQuery = '', onClose, onPublished }
           </button>
         </div>
       </Dialog>
-    )
+    );
   }
 
   if (picked) {
@@ -136,7 +136,7 @@ export function SuggestDialog({ owner, initialQuery = '', onClose, onPublished }
                 min={1940}
                 max={MAX_YEAR}
                 value={year}
-                onChange={(event) => setYear(event.target.value)}
+                onChange={event => setYear(event.target.value)}
               />
             </label>
           </div>
@@ -148,7 +148,7 @@ export function SuggestDialog({ owner, initialQuery = '', onClose, onPublished }
             rows={3}
             value={note}
             placeholder="One or two sentences about the record"
-            onChange={(event) => setNote(event.target.value)}
+            onChange={event => setNote(event.target.value)}
           />
           <span className="field-hint">{280 - note.length} characters left</span>
         </label>
@@ -166,7 +166,7 @@ export function SuggestDialog({ owner, initialQuery = '', onClose, onPublished }
           </button>
         </div>
       </Dialog>
-    )
+    );
   }
 
   return (
@@ -178,11 +178,11 @@ export function SuggestDialog({ owner, initialQuery = '', onClose, onPublished }
         placeholder="Search Spotify for an album or artist"
         aria-label="Search Spotify for an album or artist"
         value={query}
-        onChange={(event) => setQuery(event.target.value)}
+        onChange={event => setQuery(event.target.value)}
       />
       {error && <p className="dialog-error">{error}</p>}
       <ul className="results" aria-busy={searching}>
-        {shown.map((result) => (
+        {shown.map(result => (
           <li key={result.spotifyId}>
             <button type="button" className="result" disabled={result.status !== null} onClick={() => pick(result)}>
               {result.cover ? <img src={result.cover} alt="" /> : <span className="result-blank" />}
@@ -204,5 +204,5 @@ export function SuggestDialog({ owner, initialQuery = '', onClose, onPublished }
         <p className="field-hint">Nothing found on Spotify.</p>
       )}
     </Dialog>
-  )
+  );
 }

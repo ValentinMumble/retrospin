@@ -1,52 +1,52 @@
-import { useEffect, useRef } from 'react'
-import { countryName, flag } from '../countries'
-import { albumGenres, genreLabel } from '../genres'
-import type { AlbumLikes } from '../likes'
-import { SCENES } from '../scenes'
-import { cssVars } from '../style'
-import type { Album } from '../types'
-import { ExploreSection } from './ExploreSection'
+import {useEffect, useRef} from 'react';
+import {countryName, flag} from '../countries';
+import {albumGenres, genreLabel} from '../genres';
+import type {AlbumLikes} from '../likes';
+import {SCENES} from '../scenes';
+import {cssVars} from '../style';
+import type {Album} from '../types';
+import {ExploreSection} from './ExploreSection';
 
 interface AlbumPanelProps {
-  album: Album
-  likes: AlbumLikes | undefined
-  hasPrevious: boolean
-  hasNext: boolean
+  album: Album;
+  likes: AlbumLikes | undefined;
+  hasPrevious: boolean;
+  hasNext: boolean;
   /** True when the timeline shows only this album's scene (or country). */
-  sceneActive: boolean
-  countryActive: boolean
-  onFilterScene: () => void
-  onFilterCountry: () => void
+  sceneActive: boolean;
+  countryActive: boolean;
+  onFilterScene: () => void;
+  onFilterCountry: () => void;
   /** For the Explore section: every album, who is looking, and the light-up state. */
-  allAlbums: Album[]
-  owner: boolean
-  lit: boolean
-  onGenre: (genre: string) => void
-  onJump: (id: string) => void
-  onSuggest: (query: string) => void
-  onLight: (ids: ReadonlySet<string> | null) => void
-  onPrevious: () => void
-  onNext: () => void
-  onClose: () => void
+  allAlbums: Album[];
+  owner: boolean;
+  lit: boolean;
+  onGenre: (genre: string) => void;
+  onJump: (id: string) => void;
+  onSuggest: (query: string) => void;
+  onLight: (ids: ReadonlySet<string> | null) => void;
+  onPrevious: () => void;
+  onNext: () => void;
+  onClose: () => void;
 }
 
 /**
  * Phones and tablets open open.spotify.com links in the Spotify app by themselves. Computers open them in the
  * web player, so there the main link uses the spotify: address, which the desktop app answers.
  */
-const TOUCH_DEVICE = window.matchMedia('(pointer: coarse)').matches
+const TOUCH_DEVICE = window.matchMedia('(pointer: coarse)').matches;
 
 function formatDate(date: string) {
-  if (date.length !== 10) return date
+  if (date.length !== 10) return date;
   return new Date(`${date}T12:00:00`).toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-  })
+  });
 }
 
 function plural(count: number, word: string) {
-  return `${count} ${word}${count === 1 ? '' : 's'}`
+  return `${count} ${word}${count === 1 ? '' : 's'}`;
 }
 
 export function AlbumPanel({
@@ -69,45 +69,45 @@ export function AlbumPanel({
   onNext,
   onClose,
 }: AlbumPanelProps) {
-  const closeRef = useRef<HTMLButtonElement>(null)
-  const panelRef = useRef<HTMLElement>(null)
-  const scene = SCENES[album.scene]
-  const genres = albumGenres(album)
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
+  const scene = SCENES[album.scene];
+  const genres = albumGenres(album);
 
   useEffect(() => {
     // Opened from the search box (Enter steps through matches): leave the focus there.
-    if (document.activeElement?.closest('.search')) return
-    closeRef.current?.focus({ preventScroll: true })
-  }, [])
+    if (document.activeElement?.closest('.search')) return;
+    closeRef.current?.focus({preventScroll: true});
+  }, []);
 
   useEffect(() => {
-    panelRef.current?.scrollTo({ top: 0 })
-  }, [album.id])
+    panelRef.current?.scrollTo({top: 0});
+  }, [album.id]);
 
   // A click outside the panel closes it, except on an album, which opens that album instead, and in a dialog
   // opened from the panel (adding an album from Explore).
   // Listening in the bubble phase means a drag on the timeline (whose click is swallowed) never closes it.
-  const onCloseRef = useRef(onClose)
+  const onCloseRef = useRef(onClose);
   useEffect(() => {
-    onCloseRef.current = onClose
-  })
+    onCloseRef.current = onClose;
+  });
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
-      const target = event.target
-      if (!(target instanceof Element)) return
+      const target = event.target;
+      if (!(target instanceof Element)) return;
       if (panelRef.current?.contains(target) || target.closest('.card, .galaxy-star, .genre-album, .dialog-backdrop')) {
-        return
+        return;
       }
-      onCloseRef.current()
-    }
-    document.addEventListener('click', onClick)
-    return () => document.removeEventListener('click', onClick)
-  }, [])
+      onCloseRef.current();
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
 
   return (
     <>
       <div className="panel-backdrop" onClick={onClose} />
-      <aside ref={panelRef} className="panel" aria-labelledby="panel-title" style={cssVars({ '--scene': scene.color })}>
+      <aside ref={panelRef} className="panel" aria-labelledby="panel-title" style={cssVars({'--scene': scene.color})}>
         <div className="panel-nav">
           <div className="panel-steps">
             <button
@@ -164,7 +164,7 @@ export function AlbumPanel({
         <p className="panel-note">{album.note}</p>
         {genres.length > 0 && (
           <div className="panel-genres" role="group" aria-label="Genres">
-            {genres.map((name) => (
+            {genres.map(name => (
               <button
                 key={name}
                 type="button"
@@ -183,7 +183,7 @@ export function AlbumPanel({
             <h3>In your liked songs</h3>
             {likes.songs.length > 0 && (
               <ul>
-                {likes.songs.map((song) => (
+                {likes.songs.map(song => (
                   <li key={song}>{song}</li>
                 ))}
               </ul>
@@ -238,5 +238,5 @@ export function AlbumPanel({
         </p>
       </aside>
     </>
-  )
+  );
 }

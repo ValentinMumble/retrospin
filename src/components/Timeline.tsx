@@ -9,111 +9,111 @@ import {
   useState,
   type ReactNode,
   type Ref,
-} from 'react'
-import { ERAS } from '../eras'
-import { buildLayout, measure, spanOf, yearAt, type Layout } from '../layout'
-import type { LikesByAlbum } from '../likes'
-import { SCENES } from '../scenes'
-import { cssVars } from '../style'
-import type { Album } from '../types'
-import { AlbumCard } from './AlbumCard'
-import { MiniMap } from './MiniMap'
+} from 'react';
+import {ERAS} from '../eras';
+import {buildLayout, measure, spanOf, yearAt, type Layout} from '../layout';
+import type {LikesByAlbum} from '../likes';
+import {SCENES} from '../scenes';
+import {cssVars} from '../style';
+import type {Album} from '../types';
+import {AlbumCard} from './AlbumCard';
+import {MiniMap} from './MiniMap';
 
 export interface TimelineHandle {
-  scrollToYear: (year: number) => void
-  scrollToAlbum: (id: string, smooth?: boolean) => void
+  scrollToYear: (year: number) => void;
+  scrollToAlbum: (id: string, smooth?: boolean) => void;
   /** Moves by about two cards, or by most of the screen when `page` is true. */
-  step: (direction: 1 | -1, page?: boolean) => void
-  scrollToEdge: (edge: 'start' | 'end') => void
+  step: (direction: 1 | -1, page?: boolean) => void;
+  scrollToEdge: (edge: 'start' | 'end') => void;
 }
 
 interface TimelineProps {
   /** Hidden while the galaxy shows: it stays mounted so it keeps its place. */
-  hidden: boolean
-  albums: Album[]
+  hidden: boolean;
+  albums: Album[];
   /** When set, only these albums stay bright (light up related). */
-  lit: ReadonlySet<string> | null
-  firstYear: number
-  lastYear: number
-  likes: LikesByAlbum | null
-  selectedId: string | null
-  onSelect: (id: string) => void
-  onCenterYearChange: (year: number) => void
-  intro: ReactNode
-  outro: ReactNode
-  empty: ReactNode
-  ref?: Ref<TimelineHandle>
+  lit: ReadonlySet<string> | null;
+  firstYear: number;
+  lastYear: number;
+  likes: LikesByAlbum | null;
+  selectedId: string | null;
+  onSelect: (id: string) => void;
+  onCenterYearChange: (year: number) => void;
+  intro: ReactNode;
+  outro: ReactNode;
+  empty: ReactNode;
+  ref?: Ref<TimelineHandle>;
 }
 
-const YEAR_KEY = 'retrospin.year'
+const YEAR_KEY = 'retrospin.year';
 
 /** The year in the middle of the screen on the last visit, or null for the start. */
 function savedYear() {
   try {
-    const year = Number(localStorage.getItem(YEAR_KEY))
-    return Number.isInteger(year) && year > 1900 ? year : null
+    const year = Number(localStorage.getItem(YEAR_KEY));
+    return Number.isInteger(year) && year > 1900 ? year : null;
   } catch {
-    return null
+    return null;
   }
 }
 
 function saveYear(year: number | null) {
   try {
-    if (year === null) localStorage.removeItem(YEAR_KEY)
-    else localStorage.setItem(YEAR_KEY, String(year))
+    if (year === null) localStorage.removeItem(YEAR_KEY);
+    else localStorage.setItem(YEAR_KEY, String(year));
   } catch {
     // Storage blocked: the position just won't be remembered.
   }
 }
 
 function scrollBehavior(smooth = true): ScrollBehavior {
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  return smooth && !reduced ? 'smooth' : 'auto'
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return smooth && !reduced ? 'smooth' : 'auto';
 }
 
-const Eras = memo(function Eras({ layout }: { layout: Layout }) {
+const Eras = memo(function Eras({layout}: {layout: Layout}) {
   return (
     <div className="eras" aria-hidden="true">
-      {ERAS.map((era) => {
-        const span = spanOf(layout, era.start, era.end)
-        if (!span) return null
+      {ERAS.map(era => {
+        const span = spanOf(layout, era.start, era.end);
+        if (!span) return null;
         return (
           <div
             key={era.label}
             className="era"
             title={`${era.label}, ${era.start} to ${era.end}: ${era.blurb}`}
             style={cssVars(
-              { '--era': SCENES[era.scene].color },
-              { left: span.left, width: span.width, top: 10 + era.lane * 26 },
+              {'--era': SCENES[era.scene].color},
+              {left: span.left, width: span.width, top: 10 + era.lane * 26},
             )}
           >
             <span className="era-label">{era.label}</span>
           </div>
-        )
+        );
       })}
     </div>
-  )
-})
+  );
+});
 
 interface YearBlocksProps {
-  layout: Layout
-  lit: ReadonlySet<string> | null
-  likes: LikesByAlbum | null
-  selectedId: string | null
-  onSelect: (id: string) => void
+  layout: Layout;
+  lit: ReadonlySet<string> | null;
+  likes: LikesByAlbum | null;
+  selectedId: string | null;
+  onSelect: (id: string) => void;
 }
 
-const YearBlocks = memo(function YearBlocks({ layout, lit, likes, selectedId, onSelect }: YearBlocksProps) {
+const YearBlocks = memo(function YearBlocks({layout, lit, likes, selectedId, onSelect}: YearBlocksProps) {
   return (
     <div className="years">
       {layout.blocks.map((block, index) => {
-        const decadeStart = block.year % 10 === 0 || index === 0
-        const classes = ['year', block.year % 10 === 0 ? 'is-decade' : '', block.albums.length ? '' : 'is-empty']
+        const decadeStart = block.year % 10 === 0 || index === 0;
+        const classes = ['year', block.year % 10 === 0 ? 'is-decade' : '', block.albums.length ? '' : 'is-empty'];
         return (
           <section
             key={block.year}
             className={classes.filter(Boolean).join(' ')}
-            style={{ width: block.width }}
+            style={{width: block.width}}
             aria-label={String(block.year)}
           >
             <div className="year-head">
@@ -121,7 +121,7 @@ const YearBlocks = memo(function YearBlocks({ layout, lit, likes, selectedId, on
             </div>
             {block.albums.length > 0 && (
               <div className="year-grid">
-                {block.albums.map((album) => (
+                {block.albums.map(album => (
                   <AlbumCard
                     key={album.id}
                     album={album}
@@ -139,11 +139,11 @@ const YearBlocks = memo(function YearBlocks({ layout, lit, likes, selectedId, on
               </span>
             )}
           </section>
-        )
+        );
       })}
     </div>
-  )
-})
+  );
+});
 
 export function Timeline({
   hidden,
@@ -160,170 +160,170 @@ export function Timeline({
   empty,
   ref,
 }: TimelineProps) {
-  const scrollerRef = useRef<HTMLDivElement>(null)
-  const [viewport, setViewport] = useState({ width: window.innerWidth, height: window.innerHeight - 180 })
-  const [scrollLeft, setScrollLeft] = useState(0)
-  const metrics = useMemo(() => measure(viewport.width, viewport.height), [viewport])
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [viewport, setViewport] = useState({width: window.innerWidth, height: window.innerHeight - 180});
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const metrics = useMemo(() => measure(viewport.width, viewport.height), [viewport]);
   const layout = useMemo(
     () => buildLayout(albums, metrics, firstYear, lastYear),
     [albums, metrics, firstYear, lastYear],
-  )
+  );
 
   // Values read by the stable scroll handler.
-  const layoutRef = useRef(layout)
-  const centerCallback = useRef(onCenterYearChange)
-  const anchorYear = useRef<number | null>(null)
-  const lastCenter = useRef<number | null>(null)
-  const frame = useRef(0)
+  const layoutRef = useRef(layout);
+  const centerCallback = useRef(onCenterYearChange);
+  const anchorYear = useRef<number | null>(null);
+  const lastCenter = useRef<number | null>(null);
+  const frame = useRef(0);
   useLayoutEffect(() => {
-    layoutRef.current = layout
-    centerCallback.current = onCenterYearChange
-  })
+    layoutRef.current = layout;
+    centerCallback.current = onCenterYearChange;
+  });
 
   useLayoutEffect(() => {
-    const scroller = scrollerRef.current
-    if (!scroller) return
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
     const observer = new ResizeObserver(() =>
-      setViewport({ width: scroller.clientWidth, height: scroller.clientHeight }),
-    )
-    observer.observe(scroller)
-    return () => observer.disconnect()
-  }, [])
+      setViewport({width: scroller.clientWidth, height: scroller.clientHeight}),
+    );
+    observer.observe(scroller);
+    return () => observer.disconnect();
+  }, []);
 
   // When filters or the window size change the layout, keep the same year in the middle of the screen.
   // On the first layout with albums (and a visible timeline), go back to the year saved on the last visit.
-  const restored = useRef(false)
+  const restored = useRef(false);
   useLayoutEffect(() => {
-    const scroller = scrollerRef.current
-    if (!scroller) return
-    let restoring = false
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    let restoring = false;
     if (!restored.current && albums.length > 0 && scroller.clientWidth > 0) {
-      restored.current = true
-      anchorYear.current = savedYear()
-      restoring = anchorYear.current !== null
+      restored.current = true;
+      anchorYear.current = savedYear();
+      restoring = anchorYear.current !== null;
     }
-    const block = layout.blocks.find((candidate) => candidate.year === anchorYear.current)
-    if (block) scroller.scrollLeft = block.x + block.width / 2 - scroller.clientWidth / 2
+    const block = layout.blocks.find(candidate => candidate.year === anchorYear.current);
+    if (block) scroller.scrollLeft = block.x + block.width / 2 - scroller.clientWidth / 2;
     if (block && restoring) {
-      lastCenter.current = block.year
-      centerCallback.current(block.year)
+      lastCenter.current = block.year;
+      centerCallback.current(block.year);
     }
-  }, [layout, albums.length])
+  }, [layout, albums.length]);
 
   const handleScroll = useCallback(() => {
-    if (frame.current) return
+    if (frame.current) return;
     frame.current = requestAnimationFrame(() => {
-      frame.current = 0
-      const scroller = scrollerRef.current
-      if (!scroller) return
-      setScrollLeft(scroller.scrollLeft)
-      const center = yearAt(layoutRef.current, scroller.scrollLeft + scroller.clientWidth / 2)
-      anchorYear.current = scroller.scrollLeft < 8 ? null : center
-      if (restored.current && scroller.clientWidth > 0) saveYear(anchorYear.current)
+      frame.current = 0;
+      const scroller = scrollerRef.current;
+      if (!scroller) return;
+      setScrollLeft(scroller.scrollLeft);
+      const center = yearAt(layoutRef.current, scroller.scrollLeft + scroller.clientWidth / 2);
+      anchorYear.current = scroller.scrollLeft < 8 ? null : center;
+      if (restored.current && scroller.clientWidth > 0) saveYear(anchorYear.current);
       if (center !== lastCenter.current) {
-        lastCenter.current = center
-        centerCallback.current(center)
+        lastCenter.current = center;
+        centerCallback.current(center);
       }
-    })
-  }, [])
+    });
+  }, []);
 
   // Vertical wheel scrolls sideways; mouse drag pans; a drag never counts as a click.
   useEffect(() => {
-    const scroller = scrollerRef.current
-    if (!scroller) return
-    let drag: { pointerId: number; startX: number; startLeft: number; moved: boolean } | null = null
-    let swallowClick = false
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    let drag: {pointerId: number; startX: number; startLeft: number; moved: boolean} | null = null;
+    let swallowClick = false;
 
     const onWheel = (event: WheelEvent) => {
-      if (event.ctrlKey) return
-      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
-      const unit = event.deltaMode === 1 ? 32 : event.deltaMode === 2 ? scroller.clientWidth : 1
-      scroller.scrollLeft += delta * unit
-      event.preventDefault()
-    }
+      if (event.ctrlKey) return;
+      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+      const unit = event.deltaMode === 1 ? 32 : event.deltaMode === 2 ? scroller.clientWidth : 1;
+      scroller.scrollLeft += delta * unit;
+      event.preventDefault();
+    };
     const onPointerDown = (event: PointerEvent) => {
-      if (event.pointerType !== 'mouse' || event.button !== 0) return
-      drag = { pointerId: event.pointerId, startX: event.clientX, startLeft: scroller.scrollLeft, moved: false }
-    }
+      if (event.pointerType !== 'mouse' || event.button !== 0) return;
+      drag = {pointerId: event.pointerId, startX: event.clientX, startLeft: scroller.scrollLeft, moved: false};
+    };
     const onPointerMove = (event: PointerEvent) => {
-      if (!drag || event.pointerId !== drag.pointerId) return
-      const distance = event.clientX - drag.startX
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      const distance = event.clientX - drag.startX;
       if (!drag.moved && Math.abs(distance) > 5) {
-        drag.moved = true
+        drag.moved = true;
         try {
-          scroller.setPointerCapture(event.pointerId)
+          scroller.setPointerCapture(event.pointerId);
         } catch {
           // The pointer is already gone (released between events): dragging still works without capture.
         }
-        scroller.classList.add('is-dragging')
+        scroller.classList.add('is-dragging');
       }
-      if (drag.moved) scroller.scrollLeft = drag.startLeft - distance
-    }
+      if (drag.moved) scroller.scrollLeft = drag.startLeft - distance;
+    };
     const onPointerUp = (event: PointerEvent) => {
-      if (!drag || event.pointerId !== drag.pointerId) return
+      if (!drag || event.pointerId !== drag.pointerId) return;
       if (drag.moved) {
-        swallowClick = true
+        swallowClick = true;
         window.setTimeout(() => {
-          swallowClick = false
-        }, 0)
+          swallowClick = false;
+        }, 0);
       }
-      drag = null
-      scroller.classList.remove('is-dragging')
-    }
+      drag = null;
+      scroller.classList.remove('is-dragging');
+    };
     const onClickCapture = (event: MouseEvent) => {
-      if (!swallowClick) return
-      event.stopPropagation()
-      event.preventDefault()
-    }
+      if (!swallowClick) return;
+      event.stopPropagation();
+      event.preventDefault();
+    };
 
-    scroller.addEventListener('wheel', onWheel, { passive: false })
-    scroller.addEventListener('pointerdown', onPointerDown)
-    scroller.addEventListener('pointermove', onPointerMove)
-    scroller.addEventListener('pointerup', onPointerUp)
-    scroller.addEventListener('pointercancel', onPointerUp)
-    scroller.addEventListener('click', onClickCapture, true)
+    scroller.addEventListener('wheel', onWheel, {passive: false});
+    scroller.addEventListener('pointerdown', onPointerDown);
+    scroller.addEventListener('pointermove', onPointerMove);
+    scroller.addEventListener('pointerup', onPointerUp);
+    scroller.addEventListener('pointercancel', onPointerUp);
+    scroller.addEventListener('click', onClickCapture, true);
     return () => {
-      scroller.removeEventListener('wheel', onWheel)
-      scroller.removeEventListener('pointerdown', onPointerDown)
-      scroller.removeEventListener('pointermove', onPointerMove)
-      scroller.removeEventListener('pointerup', onPointerUp)
-      scroller.removeEventListener('pointercancel', onPointerUp)
-      scroller.removeEventListener('click', onClickCapture, true)
-    }
-  }, [])
+      scroller.removeEventListener('wheel', onWheel);
+      scroller.removeEventListener('pointerdown', onPointerDown);
+      scroller.removeEventListener('pointermove', onPointerMove);
+      scroller.removeEventListener('pointerup', onPointerUp);
+      scroller.removeEventListener('pointercancel', onPointerUp);
+      scroller.removeEventListener('click', onClickCapture, true);
+    };
+  }, []);
 
   useImperativeHandle(
     ref,
     () => ({
       scrollToYear(year) {
-        const blocks = layout.blocks.filter((block) => block.albums.length > 0)
-        const block = blocks.find((candidate) => candidate.year >= year) ?? blocks[blocks.length - 1]
-        if (block) scrollerRef.current?.scrollTo({ left: block.x - metrics.gapX, behavior: scrollBehavior() })
+        const blocks = layout.blocks.filter(block => block.albums.length > 0);
+        const block = blocks.find(candidate => candidate.year >= year) ?? blocks[blocks.length - 1];
+        if (block) scrollerRef.current?.scrollTo({left: block.x - metrics.gapX, behavior: scrollBehavior()});
       },
       scrollToAlbum(id, smooth = true) {
-        const card = scrollerRef.current?.querySelector(`[data-album="${CSS.escape(id)}"]`)
-        card?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: scrollBehavior(smooth) })
+        const card = scrollerRef.current?.querySelector(`[data-album="${CSS.escape(id)}"]`);
+        card?.scrollIntoView({inline: 'center', block: 'nearest', behavior: scrollBehavior(smooth)});
       },
       step(direction, page = false) {
-        const scroller = scrollerRef.current
-        if (!scroller) return
-        const amount = page ? scroller.clientWidth * 0.85 : (metrics.cardWidth + metrics.gapX) * 2
-        scroller.scrollBy({ left: direction * amount, behavior: scrollBehavior() })
+        const scroller = scrollerRef.current;
+        if (!scroller) return;
+        const amount = page ? scroller.clientWidth * 0.85 : (metrics.cardWidth + metrics.gapX) * 2;
+        scroller.scrollBy({left: direction * amount, behavior: scrollBehavior()});
       },
       scrollToEdge(edge) {
-        scrollerRef.current?.scrollTo({ left: edge === 'start' ? 0 : layout.total, behavior: scrollBehavior() })
+        scrollerRef.current?.scrollTo({left: edge === 'start' ? 0 : layout.total, behavior: scrollBehavior()});
       },
     }),
     [layout, metrics],
-  )
+  );
 
   const seek = useCallback(
     (fraction: number) => {
-      const scroller = scrollerRef.current
-      if (scroller) scroller.scrollLeft = fraction * layout.total - scroller.clientWidth / 2
+      const scroller = scrollerRef.current;
+      if (scroller) scroller.scrollLeft = fraction * layout.total - scroller.clientWidth / 2;
     },
     [layout],
-  )
+  );
 
   const style = cssVars({
     '--card-w': `${metrics.cardWidth}px`,
@@ -333,19 +333,19 @@ export function Timeline({
     '--rows': metrics.rows,
     '--eras-h': `${metrics.erasHeight}px`,
     '--axis-h': `${metrics.axisHeight}px`,
-  })
+  });
 
   return (
     <div className="timeline" style={style} hidden={hidden}>
       <div ref={scrollerRef} className="scroller" onScroll={handleScroll}>
-        <div className="track" style={{ width: layout.total }}>
+        <div className="track" style={{width: layout.total}}>
           <Eras layout={layout} />
-          <div className="intro" style={{ width: layout.introWidth }}>
+          <div className="intro" style={{width: layout.introWidth}}>
             {intro}
             {albums.length === 0 && <div className="empty">{empty}</div>}
           </div>
           <YearBlocks layout={layout} lit={lit} likes={likes} selectedId={selectedId} onSelect={onSelect} />
-          <div className="outro" style={{ width: layout.outroWidth }}>
+          <div className="outro" style={{width: layout.outroWidth}}>
             {outro}
           </div>
         </div>
@@ -359,5 +359,5 @@ export function Timeline({
         onSeek={seek}
       />
     </div>
-  )
+  );
 }

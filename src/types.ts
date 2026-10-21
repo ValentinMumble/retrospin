@@ -13,30 +13,30 @@ export type SceneKey =
   | 'alt'
   | 'dream'
   | 'britpop'
-  | 'indie'
+  | 'indie';
 
 export interface Album {
-  id: string
-  year: number
+  id: string;
+  year: number;
   /** "YYYY-MM-DD" when the exact release day is known, else "YYYY". */
-  date: string
-  artist: string
-  title: string
-  scene: SceneKey
+  date: string;
+  artist: string;
+  title: string;
+  scene: SceneKey;
   /** Two-letter country code of the album's first artist, from MusicBrainz. */
-  country: string | null
+  country: string | null;
   /** Last.fm tags of the album and its artist (album tags count double), as [tag, weight] pairs, heaviest first. */
-  tags?: [string, number][]
-  note: string
+  tags?: [string, number][];
+  note: string;
   spotify: {
-    id: string
-    url: string
+    id: string;
+    url: string;
     /** The album's name on Spotify, which may be a reissue's name. */
-    name: string
-    cover: string | null
-    coverSmall: string | null
-    artistIds: string[]
+    name: string;
+    cover: string | null;
+    coverSmall: string | null;
+    artistIds: string[];
     /** Song names, to place a liked song from a best-of on its original album. */
-    tracks: string[]
-  } | null
+    tracks: string[];
+  } | null;
 }
